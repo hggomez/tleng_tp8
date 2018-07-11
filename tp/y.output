@@ -1,0 +1,297 @@
+
+state 0
+	$accept: .J $end 
+
+	'['  shift 5
+	'{'  shift 4
+	.  error
+
+	O_INIT  goto 2
+	A_INIT  goto 3
+	J  goto 1
+
+state 1
+	$accept:  J.$end 
+
+	$end  accept
+	.  error
+
+
+state 2
+	J:  O_INIT.    (1)
+
+	.  reduce 1 (src line 36)
+
+
+state 3
+	J:  A_INIT.    (2)
+
+	.  reduce 2 (src line 41)
+
+
+state 4
+	O_INIT:  '{'.O_1 '}' 
+	O_INIT:  '{'.'}' 
+
+	'}'  shift 7
+	STRING  shift 8
+	.  error
+
+	O_1  goto 6
+
+state 5
+	A_INIT:  '['.A_1 ']' 
+	A_INIT:  '['.']' 
+
+	'['  shift 15
+	']'  shift 10
+	'{'  shift 16
+	STRING  shift 17
+	BOOL  shift 19
+	NUM  shift 18
+	NULL  shift 20
+	.  error
+
+	A  goto 12
+	A_1  goto 9
+	V  goto 11
+	O  goto 13
+	VI  goto 14
+
+state 6
+	O_INIT:  '{' O_1.'}' 
+
+	'}'  shift 21
+	.  error
+
+
+state 7
+	O_INIT:  '{' '}'.    (4)
+
+	.  reduce 4 (src line 54)
+
+
+state 8
+	O_1:  STRING.':' V 
+	O_1:  STRING.':' V ',' O_1 
+
+	':'  shift 22
+	.  error
+
+
+state 9
+	A_INIT:  '[' A_1.']' 
+
+	']'  shift 23
+	.  error
+
+
+state 10
+	A_INIT:  '[' ']'.    (6)
+
+	.  reduce 6 (src line 64)
+
+
+state 11
+	A_1:  V.    (13)
+	A_1:  V.',' A_1 
+
+	','  shift 24
+	.  reduce 13 (src line 116)
+
+
+state 12
+	V:  A.    (15)
+
+	.  reduce 15 (src line 143)
+
+
+state 13
+	V:  O.    (16)
+
+	.  reduce 16 (src line 151)
+
+
+state 14
+	V:  VI.    (17)
+
+	.  reduce 17 (src line 158)
+
+
+state 15
+	A:  '['.A_1 ']' 
+	A:  '['.']' 
+
+	'['  shift 15
+	']'  shift 26
+	'{'  shift 16
+	STRING  shift 17
+	BOOL  shift 19
+	NUM  shift 18
+	NULL  shift 20
+	.  error
+
+	A  goto 12
+	A_1  goto 25
+	V  goto 11
+	O  goto 13
+	VI  goto 14
+
+state 16
+	O:  '{'.O_1 '}' 
+	O:  '{'.'}' 
+
+	'}'  shift 28
+	STRING  shift 8
+	.  error
+
+	O_1  goto 27
+
+state 17
+	VI:  STRING.    (18)
+
+	.  reduce 18 (src line 166)
+
+
+state 18
+	VI:  NUM.    (19)
+
+	.  reduce 19 (src line 174)
+
+
+state 19
+	VI:  BOOL.    (20)
+
+	.  reduce 20 (src line 181)
+
+
+state 20
+	VI:  NULL.    (21)
+
+	.  reduce 21 (src line 188)
+
+
+state 21
+	O_INIT:  '{' O_1 '}'.    (3)
+
+	.  reduce 3 (src line 46)
+
+
+state 22
+	O_1:  STRING ':'.V 
+	O_1:  STRING ':'.V ',' O_1 
+
+	'['  shift 15
+	'{'  shift 16
+	STRING  shift 17
+	BOOL  shift 19
+	NUM  shift 18
+	NULL  shift 20
+	.  error
+
+	A  goto 12
+	V  goto 29
+	O  goto 13
+	VI  goto 14
+
+state 23
+	A_INIT:  '[' A_1 ']'.    (5)
+
+	.  reduce 5 (src line 56)
+
+
+state 24
+	A_1:  V ','.A_1 
+
+	'['  shift 15
+	'{'  shift 16
+	STRING  shift 17
+	BOOL  shift 19
+	NUM  shift 18
+	NULL  shift 20
+	.  error
+
+	A  goto 12
+	A_1  goto 30
+	V  goto 11
+	O  goto 13
+	VI  goto 14
+
+state 25
+	A:  '[' A_1.']' 
+
+	']'  shift 31
+	.  error
+
+
+state 26
+	A:  '[' ']'.    (12)
+
+	.  reduce 12 (src line 114)
+
+
+state 27
+	O:  '{' O_1.'}' 
+
+	'}'  shift 32
+	.  error
+
+
+state 28
+	O:  '{' '}'.    (8)
+
+	.  reduce 8 (src line 76)
+
+
+state 29
+	O_1:  STRING ':' V.    (9)
+	O_1:  STRING ':' V.',' O_1 
+
+	','  shift 33
+	.  reduce 9 (src line 78)
+
+
+state 30
+	A_1:  V ',' A_1.    (14)
+
+	.  reduce 14 (src line 128)
+
+
+state 31
+	A:  '[' A_1 ']'.    (11)
+
+	.  reduce 11 (src line 105)
+
+
+state 32
+	O:  '{' O_1 '}'.    (7)
+
+	.  reduce 7 (src line 67)
+
+
+state 33
+	O_1:  STRING ':' V ','.O_1 
+
+	STRING  shift 8
+	.  error
+
+	O_1  goto 34
+
+state 34
+	O_1:  STRING ':' V ',' O_1.    (10)
+
+	.  reduce 10 (src line 91)
+
+
+13 terminals, 10 nonterminals
+22 grammar rules, 35/8000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+59 working sets used
+memory: parser 33/120000
+15 extra closures
+40 shift entries, 1 exceptions
+14 goto entries
+11 entries saved by goto default
+Optimizer space used: output 48/120000
+48 table entries, 0 zero
+maximum spread: 13, maximum offset: 33
