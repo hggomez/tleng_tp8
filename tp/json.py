@@ -29,6 +29,10 @@ import ply
 import ply.lex
 import ply.yacc
 import sys
+import IPython
+
+
+# Misc code
 
 
 # The list of tokens to be extracted by the JsonLexer and parsed by
@@ -71,7 +75,7 @@ JSON_TOKENS = [
 class JsonLexer(object):
   '''A class-based wrapper around the ply.lex instance.
   The JsonLexer tokenizes an input string and produces LexToken instances
-  corresponding to the JSON_TOKENS values.
+  corresponding to the JSON_TOKENS elements.
   '''
 
   def __init__(self, **kwargs):
@@ -81,7 +85,7 @@ class JsonLexer(object):
     '''
     self.lexer = ply.lex.lex(module=self, **kwargs)
 
-  # The JsonLexer uses the JSON_TOKENS values as a contact between
+  # The JsonLexer uses the JSON_TOKENS elements as a contact between
   # the lexer and the parser.
   tokens = JSON_TOKENS
 
@@ -103,8 +107,8 @@ class JsonLexer(object):
     if last_cr < 0:
       last_cr = 0
     column = (t.lexpos - last_cr) + 1
-    print "Illegal character '%s' at line %d pos %d" % (
-      t.value[0], t.lineno, column)
+    print("Illegal character '%s' at line %d pos %d" % (
+      t.value[0], t.lineno, column))
     t.lexer.skip(1) 
 
   # Skips over '\s', '\t', '\n', and '\r' characters in the default state
@@ -140,7 +144,7 @@ class JsonLexer(object):
   # says '%x5D-10FFFF' but most pythons by default will not handle that
   def t_string_UNESCAPED(self, t):
     r'[\x20-\x21,\x23-\x5B,\x5D-\xFF]+'
-    t.value = unicode(t.value, encoding='utf8')
+    t.value = str(t.value)
     return t
 
   # Exits the string state on an unescaped closing quotation mark
@@ -227,6 +231,15 @@ class JsonLexer(object):
     return tokens
 
 
+indentation = 0
+def print_indentation():
+  global indentation
+  sys.stdout.write(' '*2*indentation)
+
+def increment_indentation():
+  global indentation
+  indentation = indentation + 1
+
 class JsonParser(object):
   '''A class-based wrapper around the ply.yacc instance.
   The JsonParser takes the tokenized output from the JsonLexer and
@@ -241,6 +254,7 @@ class JsonParser(object):
     Args:
       lexer: A ply.lex or JsonLexer instance that will produce JSON_TOKENS.
     '''
+
     if lexer is not None:
       if isinstance(lexer, JsonLexer):
         self.lexer = lexer.lexer
@@ -251,132 +265,156 @@ class JsonParser(object):
       self.lexer = JsonLexer().lexer
     self.parser = ply.yacc.yacc(module=self, **kwargs)
 
-  # The JsonParser uses the JSON_TOKENS values as a contact between
+  # The JsonParser uses the JSON_TOKENS elements as a contact between
   # the lexer and the parser.
   tokens = JSON_TOKENS
 
   # Define the parser
-  def p_text(self, p):
-    '''text : object
-            | array'''
-    p[0] = p[1]
+  
+  #def p_text_object(self, p):
+  #  '''text : object'''
 
-  def p_value(self, p):
-    '''value : object
-             | array
-             | number
-             | string'''
-    p[0] = p[1]
+  #def p_text_array(self, p):
+  #  '''text : array'''
+  
+  def p_value_string(self, p):
+    '''value : string'''
+  
+  def p_value_number(self, p):
+    '''value : number'''
 
-  def p_value_false(self, p):
-    '''value : FALSE'''
-    p[0] = False
-
+  def p_value_object(self, p):
+    '''value : object'''
+             
+  def p_value_array(self, p):
+    '''value : array'''
+  
   def p_value_true(self, p):
     '''value : TRUE'''
-    p[0] = True
+    sys.stdout.write('true')
+    
+  def p_value_false(self, p):
+    '''value : FALSE'''
+    sys.stdout.write('false')
 
   def p_value_null(self, p):
     '''value : NULL'''
-    p[0] = None
+    sys.stdout.write('null')
 
-  def p_object(self, p):
+  def p_empty_object(self, p):
+    '''object : BEGIN_OBJECT END_OBJECT'''
+
+  def p_not_empty_object(self, p):
     '''object : BEGIN_OBJECT members END_OBJECT'''
-    p[0] = dict(p[2])
+    
+  def p_members_final(self, p):
+    '''members : pair''' 
 
-  def p_members(self, p):
-    '''members : 
-               | members member VALUE_SEPARATOR
-               | members member'''
-    if len(p) == 1:
-      p[0] = list()
-    else:
-      p[1].append(p[2])
-      p[0] = p[1]
+  def p_members_not_final(self, p):
+    '''members : pair VALUE_SEPARATOR members'''
 
-  def p_member(self, p):
-    '''member : string NAME_SEPARATOR value'''
-    p[0] = (p[1], p[3])
+  def p_pair(self, p):
+    '''pair : string NAME_SEPARATOR value'''
+    print_indentation()
+  
+  def p_elements(self, p):
+    '''elements : 
+                | elements_not_final
+                | elements_final'''
+   
+  def p_elements_not_final(self, p):
+    '''elements_not_final : elements value VALUE_SEPARATOR'''
+    sys.stdout.write('\n')
+    print_indentation()
+    sys.stdout.write('-')
 
-
-  def p_values(self, p):
-    '''values : 
-              | values value VALUE_SEPARATOR
-              | values value'''
-    if len(p) == 1:
-      p[0] = list()
-    else:
-      p[1].append(p[2])
-      p[0] = p[1]
-
+  def p_elements_final(self, p):
+    '''elements_final : elements value'''
+    sys.stdout.write('\n') #podria no estar
+  
   def p_array(self, p):
-    '''array :  BEGIN_ARRAY values END_ARRAY'''
-    p[0] = p[2]
+    '''array : array_begin elements array_end'''
 
+  def p_empty_array(self, p):
+    '''array :  BEGIN_ARRAY END_ARRAY'''
+    print_indentation()
+    sys.stdout.write('[]')
+
+  def p_array_begin(self, p):
+    '''array_begin :  BEGIN_ARRAY'''
+    print_indentation()
+    sys.stdout.write('-')
+
+  def p_array_end(self, p):
+    '''array_end : END_ARRAY'''
+    
   def p_number_positive(self, p):
     '''number : integer
               | float'''
-    p[0] = p[1]
+    #p[0] = p[1]
 
   def p_number_negative(self, p):
     '''number : MINUS integer
               | MINUS float'''
-    p[0] = -p[2]
+    #p[0] = -p[2]
 
   def p_integer(self, p):
     '''integer : int'''
-    p[0] = p[1]
+    #p[0] = p[1]
 
   def p_integer_exp(self, p):
     '''integer : int exp'''
-    p[0] = p[1] * (10**p[2])
+    #p[0] = p[1] * (10**p[2])
 
   def p_number_float(self, p):
     '''float : int frac'''
-    p[0] = p[1] + p[2]
+    #p[0] = p[1] + p[2]
 
   def p_number_float_exp(self, p):
     '''float : int frac exp'''
-    p[0] = (p[1] + p[2]) * (10**p[3])
+    #p[0] = (p[1] + p[2]) * (10**p[3])
 
   def p_exp_negative(self, p):
     '''exp : E MINUS DIGITS'''
-    p[0] = -int(p[3])
+    #p[0] = -int(p[3])
 
   def p_exp(self, p):
     '''exp : E DIGITS'''
-    p[0] = int(p[2])
+    #p[0] = int(p[2])
 
   def p_exp_positive(self, p):
     '''exp : E PLUS DIGITS'''
-    p[0] = int(p[3])
+    #p[0] = int(p[3])
 
   def p_frac(self, p):
     '''frac : DECIMAL_POINT DIGITS'''
-    p[0] = float('.' + p[2])
+    #p[0] = float('.' + p[2])
 
   def p_int_zero(self, p):
     '''int : ZERO'''
-    p[0] = int(0)
+    #p[0] = int(0)
 
   def p_int_non_zero(self, p):
     '''int : DIGITS'''
     if p[1].startswith('0'):
       raise SyntaxError('Leading zeroes are not allowed.')
-    p[0] = int(p[1])
+    #p[0] = int(p[1])
 
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
-    p[0] = p[2]
+    #TODO: ESTO ESTÁ MAL
+    print_indentation()
+    sys.stdout.write("some_key:")
+    #increment_indentation()
+    sys.stdout.write('\n')
 
-  def p_chars(self, p):
-    '''chars :
-             | chars char'''
-    if len(p) == 1:
-      p[0] = unicode()
-    else:
-      p[0] = p[1] + p[2]
+  def p_final_chars(self, p):
+    '''chars : '''
 
+  def p_not_final_chars(self, p):
+    '''chars : chars char'''
+
+    
   def p_char(self, p):
     '''char : UNESCAPED
             | ESCAPE QUOTATION_MARK
@@ -389,7 +427,7 @@ class JsonParser(object):
             | ESCAPE TAB_CHAR'''
     # Because the subscript [-1] has special meaning for YaccProduction
     # slices we use [len(p) - 1] to always take the last value.
-    p[0] = p[len(p) - 1]
+    #p[0] = p[len(p) - 1]
 
   def p_char_unicode_hex(self, p):
     '''char : ESCAPE UNICODE_HEX'''
@@ -397,10 +435,10 @@ class JsonParser(object):
     # the form \uXXXX and is assigned to p[2].  We take the trailing
     # XXXX string via p[2][1:], parse it as a radix 16 (hex) integer,
     # and convert that to the corresponding unicode character.
-    p[0] = unichr(int(p[2][1:], 16))
+    #p[0] = unichr(int(p[2][1:], 16))
 
   def p_error(self, p): 
-    print "Syntax error at '%s'" % p
+    print( "Syntax error at '%s'" % p)
 
   # Invoke the parser
   def parse(self, data, lexer=None, *args, **kwargs):
@@ -446,10 +484,10 @@ def main(argv):
   '''Parses JSON files or stdin and prints the python data structure.'''
   if len(argv) > 1:
     for filename in argv[1:]:
-      print parse_file(open(filename))
+      parse_file(open(filename))
   else:
-    print parse_file(sys.stdin)
+    parse_file(sys.stdin)
 
 
 if __name__ == '__main__':
-main(sys.argv)
+  main(sys.argv)
