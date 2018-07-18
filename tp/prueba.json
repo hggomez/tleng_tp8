@@ -1,0 +1,8 @@
+{
+    "glossary": [true, false, true, [true, true, []]],
+    "another_key": [true,false,true],
+    "asd": [],
+    "key2": "string\n string",
+    "some_num": 2,
+    "some2_num": 2e9
+}
