@@ -286,55 +286,65 @@ class JsonParser(object):
   
   def p_value_string(self, p):
     '''value : string'''
-    end_line()
   
   def p_value_number(self, p):
     '''value : number'''
-    end_line()
 
-  def p_value_object(self, p):
+  def p_value_empty_object(self, p):
     '''value : object'''
-    end_line()
-             
+
   def p_value_array(self, p):
     '''value : array'''
-    end_line()
   
   def p_value_true(self, p):
     '''value : TRUE'''
     sys.stdout.write('true')
-    decrement_indentation()
     
   def p_value_false(self, p):
     '''value : FALSE'''
     sys.stdout.write('false')
-    decrement_indentation()
 
   def p_value_null(self, p):
     '''value : NULL'''
     sys.stdout.write('null')
-    decrement_indentation()
 
   def p_empty_object(self, p):
     '''object : BEGIN_OBJECT END_OBJECT'''
 
   def p_not_empty_object(self, p):
-    '''object : BEGIN_OBJECT members END_OBJECT'''
-    
+    '''object : object_begin members object_end'''
+  
+  def p_object_begin(self, p):
+    '''object_begin : BEGIN_OBJECT'''
+
+  def p_object_end(self, p):
+    '''object_end : END_OBJECT'''
+    end_line()
+
+
   def p_members_final(self, p):
     '''members : pair''' 
 
   def p_members_not_final(self, p):
-    '''members : pair VALUE_SEPARATOR members'''
-
+    '''members : aux members'''
+  
+  def p_aux(self, p):
+    '''aux : pair VALUE_SEPARATOR'''
+  
   def p_pair(self, p):
-    '''pair : key value'''
-    print_indentation()
+    '''pair : key mi_vieja'''
+
+  def p_mi_vieja(self, p):
+    '''mi_vieja : value'''
+    decrement_indentation()
+    end_line()
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
     sys.stdout.write(':')
-
+    end_line()
+    increment_indentation()
+    print_indentation()
   
   def p_elements(self, p):
     '''elements : 
@@ -344,7 +354,6 @@ class JsonParser(object):
   def p_elements_not_final(self, p):
     '''elements_not_final : elements value VALUE_SEPARATOR'''
     sys.stdout.write('\n')
-    increment_indentation()
     print_indentation()
     sys.stdout.write('-')
 
@@ -362,9 +371,6 @@ class JsonParser(object):
 
   def p_array_begin(self, p):
     '''array_begin :  BEGIN_ARRAY'''
-    sys.stdout.write('\n')
-    increment_indentation()
-    print_indentation()
     sys.stdout.write('-')
 
   def p_array_end(self, p):
@@ -373,48 +379,37 @@ class JsonParser(object):
   def p_number_positive(self, p):
     '''number : integer
               | float'''
-    #p[0] = p[1]
 
   def p_number_negative(self, p):
     '''number : MINUS integer
               | MINUS float'''
-    #p[0] = -p[2]
 
   def p_integer(self, p):
     '''integer : int'''
-    #p[0] = p[1]
 
   def p_integer_exp(self, p):
     '''integer : int exp'''
-    #p[0] = p[1] * (10**p[2])
 
   def p_number_float(self, p):
     '''float : int frac'''
-    #p[0] = p[1] + p[2]
 
   def p_number_float_exp(self, p):
     '''float : int frac exp'''
-    #p[0] = (p[1] + p[2]) * (10**p[3])
 
   def p_exp_negative(self, p):
     '''exp : E MINUS DIGITS'''
-    #p[0] = -int(p[3])
 
   def p_exp(self, p):
     '''exp : E DIGITS'''
-    #p[0] = int(p[2])
 
   def p_exp_positive(self, p):
     '''exp : E PLUS DIGITS'''
-    #p[0] = int(p[3])
 
   def p_frac(self, p):
     '''frac : DECIMAL_POINT DIGITS'''
-    #p[0] = float('.' + p[2])
 
   def p_int_zero(self, p):
     '''int : ZERO'''
-    #p[0] = int(0)
 
   def p_int_non_zero(self, p):
     '''int : DIGITS'''
@@ -425,7 +420,6 @@ class JsonParser(object):
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
     #TODO: ESTO ESTÁ MAL
-    print_indentation()
     sys.stdout.write("some_key")
 
   def p_final_chars(self, p):

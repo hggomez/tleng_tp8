@@ -1,5 +1,9 @@
 {
-    "glossary": [true, false, true, true],
-    "another_key": [true,false,true],
-    "key2": "string"
+    "key_1": true,
+    "key_1": false,
+    "key_3": true,
+    "key_3": "un_string",
+    "key_4": [true,true,true],
+    "key5": "holas",
+    "key6": false
 }
