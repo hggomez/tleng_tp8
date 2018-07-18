@@ -1,5 +1,5 @@
 #!/usr/bin/python2.5
-
+# -*- coding: utf-8 -*-
 # Copyright 2009 DeWitt Clinton All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -290,6 +290,7 @@ class JsonParser(object):
   
   def p_value_number(self, p):
     '''value : number'''
+    sys.stdout.write(str(p[1]))
     end_line()
 
   def p_value_object(self, p):
@@ -350,7 +351,7 @@ class JsonParser(object):
 
   def p_elements_final(self, p):
     '''elements_final : elements value'''
-    sys.stdout.write('\n') #podria no estar
+#    sys.stdout.write('\n') #podria no estar
   
   def p_array(self, p):
     '''array : array_begin elements array_end'''
@@ -373,67 +374,68 @@ class JsonParser(object):
   def p_number_positive(self, p):
     '''number : integer
               | float'''
-    #p[0] = p[1]
+    p[0] = p[1]
 
   def p_number_negative(self, p):
     '''number : MINUS integer
               | MINUS float'''
-    #p[0] = -p[2]
+    p[0] = -p[2]
 
   def p_integer(self, p):
     '''integer : int'''
-    #p[0] = p[1]
+    p[0] = p[1]
 
   def p_integer_exp(self, p):
     '''integer : int exp'''
-    #p[0] = p[1] * (10**p[2])
+    p[0] = p[1] * (10**p[2])
 
   def p_number_float(self, p):
     '''float : int frac'''
-    #p[0] = p[1] + p[2]
+    p[0] = p[1] + p[2]
 
   def p_number_float_exp(self, p):
     '''float : int frac exp'''
-    #p[0] = (p[1] + p[2]) * (10**p[3])
+    p[0] = (p[1] + p[2]) * (10**p[3])
 
   def p_exp_negative(self, p):
     '''exp : E MINUS DIGITS'''
-    #p[0] = -int(p[3])
+    p[0] = -int(p[3])
 
   def p_exp(self, p):
     '''exp : E DIGITS'''
-    #p[0] = int(p[2])
+    p[0] = int(p[2])
 
   def p_exp_positive(self, p):
     '''exp : E PLUS DIGITS'''
-    #p[0] = int(p[3])
+    p[0] = int(p[3])
 
   def p_frac(self, p):
     '''frac : DECIMAL_POINT DIGITS'''
-    #p[0] = float('.' + p[2])
+    p[0] = float('.' + p[2])
 
   def p_int_zero(self, p):
     '''int : ZERO'''
-    #p[0] = int(0)
+    p[0] = int(0)
 
   def p_int_non_zero(self, p):
     '''int : DIGITS'''
     if p[1].startswith('0'):
       raise SyntaxError('Leading zeroes are not allowed.')
-    #p[0] = int(p[1])
+    p[0] = int(p[1])
 
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
-    #TODO: ESTO ESTÁ MAL
+    #ver cómo manejar para que no imprima '"asd":"asd"', sino 'asd: "asd"'
     print_indentation()
-    sys.stdout.write("some_key")
+    sys.stdout.write("\""+p[2]+"\"")
 
   def p_final_chars(self, p):
     '''chars : '''
-
+    p[0] = ""
+    
   def p_not_final_chars(self, p):
     '''chars : chars char'''
-
+    p[0] = p[1] + p[2]
     
   def p_char(self, p):
     '''char : UNESCAPED
@@ -447,7 +449,7 @@ class JsonParser(object):
             | ESCAPE TAB_CHAR'''
     # Because the subscript [-1] has special meaning for YaccProduction
     # slices we use [len(p) - 1] to always take the last value.
-    #p[0] = p[len(p) - 1]
+    p[0] = p[len(p) - 1]
 
   def p_char_unicode_hex(self, p):
     '''char : ESCAPE UNICODE_HEX'''
@@ -455,7 +457,7 @@ class JsonParser(object):
     # the form \uXXXX and is assigned to p[2].  We take the trailing
     # XXXX string via p[2][1:], parse it as a radix 16 (hex) integer,
     # and convert that to the corresponding unicode character.
-    #p[0] = unichr(int(p[2][1:], 16))
+    p[0] = unichr(int(p[2][1:], 16))
 
   def p_error(self, p): 
     print( "Syntax error at '%s'" % p)
