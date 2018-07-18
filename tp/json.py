@@ -1,5 +1,5 @@
 #!/usr/bin/python2.5
-
+# -*- coding: utf-8 -*-
 # Copyright 2009 DeWitt Clinton All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -289,6 +289,8 @@ class JsonParser(object):
   
   def p_value_number(self, p):
     '''value : number'''
+#    end_line()
+  
 
   def p_value_empty_object(self, p):
     '''value : object'''
@@ -359,14 +361,14 @@ class JsonParser(object):
 
   def p_elements_final(self, p):
     '''elements_final : elements value'''
-    sys.stdout.write('\n') #podria no estar
+#    sys.stdout.write('\n') #podria no estar
   
   def p_array(self, p):
     '''array : array_begin elements array_end'''
 
   def p_empty_array(self, p):
     '''array :  BEGIN_ARRAY END_ARRAY'''
-    print_indentation()
+#    print_indentation()
     sys.stdout.write('[]')
 
   def p_array_begin(self, p):
@@ -415,7 +417,7 @@ class JsonParser(object):
     '''int : DIGITS'''
     if p[1].startswith('0'):
       raise SyntaxError('Leading zeroes are not allowed.')
-    #p[0] = int(p[1])
+    p[0] = int(p[1])
 
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
@@ -424,10 +426,11 @@ class JsonParser(object):
 
   def p_final_chars(self, p):
     '''chars : '''
-
+    p[0] = ""
+    
   def p_not_final_chars(self, p):
     '''chars : chars char'''
-
+    p[0] = p[1] + p[2]
     
   def p_char(self, p):
     '''char : UNESCAPED
@@ -441,7 +444,7 @@ class JsonParser(object):
             | ESCAPE TAB_CHAR'''
     # Because the subscript [-1] has special meaning for YaccProduction
     # slices we use [len(p) - 1] to always take the last value.
-    #p[0] = p[len(p) - 1]
+    p[0] = p[len(p) - 1]
 
   def p_char_unicode_hex(self, p):
     '''char : ESCAPE UNICODE_HEX'''
@@ -449,7 +452,7 @@ class JsonParser(object):
     # the form \uXXXX and is assigned to p[2].  We take the trailing
     # XXXX string via p[2][1:], parse it as a radix 16 (hex) integer,
     # and convert that to the corresponding unicode character.
-    #p[0] = unichr(int(p[2][1:], 16))
+    p[0] = unichr(int(p[2][1:], 16))
 
   def p_error(self, p): 
     print( "Syntax error at '%s'" % p)
