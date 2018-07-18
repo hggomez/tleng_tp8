@@ -286,33 +286,37 @@ class JsonParser(object):
   
   def p_value_string(self, p):
     '''value : string'''
-  
+    sys.stdout.write("\""+str(p[1])+"\"")
+    end_line()
+
   def p_value_number(self, p):
     '''value : number'''
     sys.stdout.write(str(p[1]))
-#    end_line()
+    end_line()
   
   def p_value_empty_object(self, p):
     '''value : object'''
-
+    end_line()
+    
   def p_value_array(self, p):
     '''value : array'''
-  
+    
   def p_value_true(self, p):
     '''value : TRUE'''
-    sys.stdout.write('true')
+    sys.stdout.write('true\n')
     
   def p_value_false(self, p):
     '''value : FALSE'''
-    sys.stdout.write('false')
+    sys.stdout.write('false\n')
 
   def p_value_null(self, p):
     '''value : NULL'''
-    sys.stdout.write('')
+    end_line()
 
   def p_empty_object(self, p):
     '''object : BEGIN_OBJECT END_OBJECT'''
-
+    print ("{}")
+    
   def p_not_empty_object(self, p):
     '''object : object_begin members object_end'''
   
@@ -337,15 +341,15 @@ class JsonParser(object):
 
   def p_value_abst(self, p):
     '''value_abst : value'''
-    decrement_indentation()
-    end_line()
+#    decrement_indentation()
+#    end_line()
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
     sys.stdout.write(':')
-    end_line()
-    increment_indentation()
-    print_indentation()
+    #end_line()
+#    increment_indentation()
+#    print_indentation()
   
   def p_elements(self, p):
     '''elements : 
@@ -354,17 +358,17 @@ class JsonParser(object):
    
   def p_elements_not_final(self, p):
     '''elements_not_final : elements value VALUE_SEPARATOR'''
-    sys.stdout.write('\n')
+#    sys.stdout.write('\n')
     print_indentation()
     sys.stdout.write('-')
 
   def p_elements_final(self, p):
     '''elements_final : elements value'''
-#    sys.stdout.write('\n') #podria no estar
+    sys.stdout.write('\n') #podria no estar
   
   def p_array(self, p):
     '''array : array_begin elements array_end'''
-
+    
   def p_empty_array(self, p):
     '''array :  BEGIN_ARRAY END_ARRAY'''
 #    print_indentation()
@@ -372,10 +376,11 @@ class JsonParser(object):
 
   def p_array_begin(self, p):
     '''array_begin :  BEGIN_ARRAY'''
-    sys.stdout.write('-')
+    increment_indentation()
 
   def p_array_end(self, p):
     '''array_end : END_ARRAY'''
+    decrement_indentation()
     
   def p_number_positive(self, p):
     '''number : integer
@@ -432,7 +437,7 @@ class JsonParser(object):
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
     #TODO: ESTO ESTÁ MAL
-    sys.stdout.write(p[2])
+    sys.stdout.write("\""+str(p[2])+"\"")
 
   def p_final_chars(self, p):
     '''chars : '''
