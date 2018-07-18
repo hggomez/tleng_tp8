@@ -289,9 +289,9 @@ class JsonParser(object):
   
   def p_value_number(self, p):
     '''value : number'''
+    sys.stdout.write(str(p[1]))
 #    end_line()
   
-
   def p_value_empty_object(self, p):
     '''value : object'''
 
@@ -308,7 +308,7 @@ class JsonParser(object):
 
   def p_value_null(self, p):
     '''value : NULL'''
-    sys.stdout.write('null')
+    sys.stdout.write('')
 
   def p_empty_object(self, p):
     '''object : BEGIN_OBJECT END_OBJECT'''
@@ -322,7 +322,6 @@ class JsonParser(object):
   def p_object_end(self, p):
     '''object_end : END_OBJECT'''
     end_line()
-
 
   def p_members_final(self, p):
     '''members : pair''' 
@@ -381,38 +380,49 @@ class JsonParser(object):
   def p_number_positive(self, p):
     '''number : integer
               | float'''
+    p[0] = p[1]
 
   def p_number_negative(self, p):
     '''number : MINUS integer
               | MINUS float'''
-
+    p[0] = -p[2]
+    
   def p_integer(self, p):
     '''integer : int'''
-
+    p[0] = p[1]
+    
   def p_integer_exp(self, p):
     '''integer : int exp'''
-
+    p[0] = p[1] * (10 ** p[2])
+    
   def p_number_float(self, p):
     '''float : int frac'''
-
+    p[0] = p[1] + p[2]
+    
   def p_number_float_exp(self, p):
     '''float : int frac exp'''
-
+    p[0] = (p[1] + p[2]) * (10**p[3])
+    
   def p_exp_negative(self, p):
     '''exp : E MINUS DIGITS'''
-
+    p[0] = -int(p[3])
+    
   def p_exp(self, p):
     '''exp : E DIGITS'''
+    p[0] = int(p[2])
 
   def p_exp_positive(self, p):
     '''exp : E PLUS DIGITS'''
+    p[0] = int(p[3])
 
   def p_frac(self, p):
     '''frac : DECIMAL_POINT DIGITS'''
+    p[0] = float('.' + p[2])
 
   def p_int_zero(self, p):
     '''int : ZERO'''
-
+    p[0] = int(0)
+    
   def p_int_non_zero(self, p):
     '''int : DIGITS'''
     if p[1].startswith('0'):
@@ -422,7 +432,7 @@ class JsonParser(object):
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
     #TODO: ESTO ESTÁ MAL
-    sys.stdout.write("some_key")
+    sys.stdout.write(p[2])
 
   def p_final_chars(self, p):
     '''chars : '''
