@@ -286,20 +286,20 @@ class JsonParser(object):
   
   def p_value_string(self, p):
     '''value : string'''
-    end_line()
+#    end_line()
   
   def p_value_number(self, p):
     '''value : number'''
     sys.stdout.write(str(p[1]))
-    end_line()
+#    end_line()
 
   def p_value_object(self, p):
     '''value : object'''
-    end_line()
+#    end_line()
              
   def p_value_array(self, p):
     '''value : array'''
-    end_line()
+#    end_line()
   
   def p_value_true(self, p):
     '''value : TRUE'''
@@ -330,7 +330,9 @@ class JsonParser(object):
 
   def p_pair(self, p):
     '''pair : key value'''
+    end_line()
     print_indentation()
+    
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
@@ -358,7 +360,7 @@ class JsonParser(object):
 
   def p_empty_array(self, p):
     '''array :  BEGIN_ARRAY END_ARRAY'''
-    print_indentation()
+#    print_indentation()
     sys.stdout.write('[]')
 
   def p_array_begin(self, p):
@@ -370,6 +372,8 @@ class JsonParser(object):
 
   def p_array_end(self, p):
     '''array_end : END_ARRAY'''
+    decrement_indentation()
+#    end_line()
     
   def p_number_positive(self, p):
     '''number : integer
@@ -387,7 +391,7 @@ class JsonParser(object):
 
   def p_integer_exp(self, p):
     '''integer : int exp'''
-    p[0] = p[1] * (10**p[2])
+    p[0] = (p[1])*(10 ** p[2])
 
   def p_number_float(self, p):
     '''float : int frac'''
