@@ -422,7 +422,8 @@ class JsonParser(object):
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
     #TODO: ESTO ESTÁ MAL
-    sys.stdout.write("some_key")
+    #sys.stdout.write("some_key")
+    sys.stdout.write("\""+p[2]+"\"")
 
   def p_final_chars(self, p):
     '''chars : '''
