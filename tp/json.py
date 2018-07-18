@@ -289,8 +289,7 @@ class JsonParser(object):
   
   def p_value_number(self, p):
     '''value : number'''
-#    end_line()
-  
+    print(p[1])
 
   def p_value_empty_object(self, p):
     '''value : object'''
@@ -355,9 +354,9 @@ class JsonParser(object):
    
   def p_elements_not_final(self, p):
     '''elements_not_final : elements value VALUE_SEPARATOR'''
-    sys.stdout.write('\n')
+#    sys.stdout.write('\n')
     print_indentation()
-    sys.stdout.write('-')
+    sys.stdout.write('- ')
 
   def p_elements_final(self, p):
     '''elements_final : elements value'''
@@ -373,7 +372,7 @@ class JsonParser(object):
 
   def p_array_begin(self, p):
     '''array_begin :  BEGIN_ARRAY'''
-    sys.stdout.write('-')
+    sys.stdout.write('- ')
 
   def p_array_end(self, p):
     '''array_end : END_ARRAY'''
@@ -381,37 +380,48 @@ class JsonParser(object):
   def p_number_positive(self, p):
     '''number : integer
               | float'''
-
+    p[0] = p[1]
+    
   def p_number_negative(self, p):
     '''number : MINUS integer
               | MINUS float'''
-
+    p[0] = -p[2]
+    
   def p_integer(self, p):
     '''integer : int'''
-
+    p[0] = p[1]
+    
   def p_integer_exp(self, p):
     '''integer : int exp'''
-
+    p[0] = p[1] * (10 ** p[2])
+    
   def p_number_float(self, p):
     '''float : int frac'''
-
+    p[0] = p[1] + p[2]
+    
   def p_number_float_exp(self, p):
     '''float : int frac exp'''
-
+    p[0] = (p[1] + p[2]) * (10 ** p[3])
+    
   def p_exp_negative(self, p):
     '''exp : E MINUS DIGITS'''
+    p[0] = -p[3]
 
   def p_exp(self, p):
     '''exp : E DIGITS'''
-
+    p[0] = p[2]
+    
   def p_exp_positive(self, p):
     '''exp : E PLUS DIGITS'''
-
+    p[0] = p[3]
+    
   def p_frac(self, p):
     '''frac : DECIMAL_POINT DIGITS'''
-
+    p[0] = int('.'+str(p[2]))
+    
   def p_int_zero(self, p):
     '''int : ZERO'''
+    p[0] = int(0)
 
   def p_int_non_zero(self, p):
     '''int : DIGITS'''
