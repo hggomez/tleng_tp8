@@ -244,6 +244,8 @@ def decrement_indentation():
   global indentation
   indentation = indentation - 1
 
+def end_line():
+  sys.stdout.write('\n')
 
 class JsonParser(object):
   '''A class-based wrapper around the ply.yacc instance.
@@ -284,15 +286,19 @@ class JsonParser(object):
   
   def p_value_string(self, p):
     '''value : string'''
+    end_line()
   
   def p_value_number(self, p):
     '''value : number'''
+    end_line()
 
   def p_value_object(self, p):
     '''value : object'''
+    end_line()
              
   def p_value_array(self, p):
     '''value : array'''
+    end_line()
   
   def p_value_true(self, p):
     '''value : TRUE'''
@@ -322,8 +328,13 @@ class JsonParser(object):
     '''members : pair VALUE_SEPARATOR members'''
 
   def p_pair(self, p):
-    '''pair : string NAME_SEPARATOR value'''
+    '''pair : key value'''
     print_indentation()
+
+  def p_key(self, p):
+    '''key : string NAME_SEPARATOR'''
+    sys.stdout.write(':')
+
   
   def p_elements(self, p):
     '''elements : 
@@ -415,7 +426,7 @@ class JsonParser(object):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
     #TODO: ESTO ESTÁ MAL
     print_indentation()
-    sys.stdout.write("some_key:")
+    sys.stdout.write("some_key")
 
   def p_final_chars(self, p):
     '''chars : '''
