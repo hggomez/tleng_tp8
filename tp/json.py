@@ -328,16 +328,16 @@ class JsonParser(object):
     '''members : pair''' 
 
   def p_members_not_final(self, p):
-    '''members : aux members'''
+    '''members : pair_and_separator members'''
   
-  def p_aux(self, p):
-    '''aux : pair VALUE_SEPARATOR'''
+  def p_pair_and_separator(self, p):
+    '''pair_and_separator : pair VALUE_SEPARATOR'''
   
   def p_pair(self, p):
-    '''pair : key mi_vieja'''
+    '''pair : key value_abst'''
 
-  def p_mi_vieja(self, p):
-    '''mi_vieja : value'''
+  def p_value_abst(self, p):
+    '''value_abst : value'''
     decrement_indentation()
     end_line()
 
