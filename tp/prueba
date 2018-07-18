@@ -1,4 +1,5 @@
 {
-    "glossary": [true, false],
-    "pepazo": "some_other_value"
+    "glossary": [true, false, true, true],
+    "glossary2": [true, false, true, true],
+    "some_other_key": true
 }

@@ -29,7 +29,7 @@ import ply
 import ply.lex
 import ply.yacc
 import sys
-import IPython
+#import IPython
 
 
 # Misc code
@@ -240,6 +240,11 @@ def increment_indentation():
   global indentation
   indentation = indentation + 1
 
+def decrement_indentation():
+  global indentation
+  indentation = indentation - 1
+
+
 class JsonParser(object):
   '''A class-based wrapper around the ply.yacc instance.
   The JsonParser takes the tokenized output from the JsonLexer and
@@ -292,14 +297,17 @@ class JsonParser(object):
   def p_value_true(self, p):
     '''value : TRUE'''
     sys.stdout.write('true')
+    decrement_indentation()
     
   def p_value_false(self, p):
     '''value : FALSE'''
     sys.stdout.write('false')
+    decrement_indentation()
 
   def p_value_null(self, p):
     '''value : NULL'''
     sys.stdout.write('null')
+    decrement_indentation()
 
   def p_empty_object(self, p):
     '''object : BEGIN_OBJECT END_OBJECT'''
@@ -325,6 +333,7 @@ class JsonParser(object):
   def p_elements_not_final(self, p):
     '''elements_not_final : elements value VALUE_SEPARATOR'''
     sys.stdout.write('\n')
+    increment_indentation()
     print_indentation()
     sys.stdout.write('-')
 
@@ -342,6 +351,8 @@ class JsonParser(object):
 
   def p_array_begin(self, p):
     '''array_begin :  BEGIN_ARRAY'''
+    sys.stdout.write('\n')
+    increment_indentation()
     print_indentation()
     sys.stdout.write('-')
 
@@ -405,8 +416,6 @@ class JsonParser(object):
     #TODO: ESTO ESTÁ MAL
     print_indentation()
     sys.stdout.write("some_key:")
-    #increment_indentation()
-    sys.stdout.write('\n')
 
   def p_final_chars(self, p):
     '''chars : '''
