@@ -1,44 +1,8 @@
-#!/usr/bin/python2.5
-# -*- coding: utf-8 -*-
-# Copyright 2009 DeWitt Clinton All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-'''A JSON parser built using the PLY (Python Lex-Yacc) library.
-Sample usage:
->>> import jsonply
->>> jsonply.parse('{"foo": "bar", "arr": [1, {"a": -2.50e4}, true]}')
-{u'arr': [1, {u'a': -25000.0}, True], u'foo': u'bar'}
-'''
-
-__author__ = 'dewitt@unto.net'
-__version__ = '0.1-devel'
-
-
 import ply
 import ply.lex
 import ply.yacc
 import sys
-#import IPython
 
-
-# Misc code
-
-
-# The list of tokens to be extracted by the JsonLexer and parsed by
-# the JsonParser.  These tokens form the contract between the
-# JsonLexer and the JsonParser and any changes here will need to 
-# be synchronized among those classes.
 JSON_TOKENS = [
   # Initial state tokens
   'BEGIN_ARRAY',
@@ -57,46 +21,14 @@ JSON_TOKENS = [
   'MINUS',
   'PLUS',
   'ZERO',
-  # String state tokens
-  'UNESCAPED',
-  'ESCAPE',
-  # Escaped state tokens
-  'REVERSE_SOLIDUS',
-  'SOLIDUS',
-  'BACKSPACE_CHAR',
-  'FORM_FEED_CHAR',
-  'LINE_FEED_CHAR',
-  'CARRIAGE_RETURN_CHAR',
-  'TAB_CHAR',
-  'UNICODE_HEX'
+  'UNESCAPED'
 ]
 
 
 class JsonLexer(object):
-  '''A class-based wrapper around the ply.lex instance.
-  The JsonLexer tokenizes an input string and produces LexToken instances
-  corresponding to the JSON_TOKENS elements.
-  '''
-
   def __init__(self, **kwargs):
-    '''Constructs the JsonLexer based on the tokenization rules herein.
-    Successful construction builds the ply.lex instance and sets
-    self.lexer.
-    '''
     self.lexer = ply.lex.lex(module=self, **kwargs)
-
-  # The JsonLexer uses the JSON_TOKENS elements as a contact between
-  # the lexer and the parser.
   tokens = JSON_TOKENS
-
-  # The JsonLexer has three exclusive states:
-  #
-  #   default:
-  #     The default context, tokenizing objects, arrays, numbers, etc.
-  #   string:
-  #     Within quote-delimited strings.
-  #   escaped:
-  #     A single-use state that treats the next character literally.
   states = (
     ('string', 'exclusive'),
     ('escaped', 'exclusive')
@@ -111,7 +43,6 @@ class JsonLexer(object):
       t.value[0], t.lineno, column))
     t.lexer.skip(1) 
 
-  # Skips over '\s', '\t', '\n', and '\r' characters in the default state
   t_ignore = '\x20\x09\x0A\x0D'
 
   # Default state tokens
@@ -131,17 +62,13 @@ class JsonLexer(object):
   t_PLUS                 = r'\x2B'                  # '+'
   t_ZERO                 = r'\x30'                  # '0'
 
-  # Enters the string state on an opening quotation mark 
   def t_QUOTATION_MARK(self, t):
     r'\x22'   # '"'
     t.lexer.push_state('string') 
     return t
 
-  # Don't skip over any tokens inside the string state
   t_string_ignore = ''
 
-  # TODO(dewitt): Verify that this matches the correct range, the spec
-  # says '%x5D-10FFFF' but most pythons by default will not handle that
   def t_string_UNESCAPED(self, t):
     r'[\x20-\x21,\x23-\x5B,\x5D-\xFF]+'
     t.value = str(t.value)
@@ -153,59 +80,8 @@ class JsonLexer(object):
     t.lexer.pop_state()
     return t
 
-  # Enter the escaped state on a '\' character
-  def t_string_ESCAPE(self, t):
-    r'\x5C'  # '\'
-    t.lexer.push_state('escaped')
-    return t
-
   # Don't skip over any tokens inside the escaped state
   t_escaped_ignore = ''
-
-  def t_escaped_QUOTATION_MARK(self, t):
-    r'\x22'  # '"'
-    t.lexer.pop_state()
-    return t
-
-  def t_escaped_REVERSE_SOLIDUS(self, t):
-    r'\x5C'  # '\'
-    t.lexer.pop_state()
-    return t
-
-  def t_escaped_SOLIDUS(self, t):
-    r'\x2F'  # '/'
-    t.lexer.pop_state()
-    return t
-
-  def t_escaped_BACKSPACE_CHAR(self, t):
-    r'\x62'  # 'b'
-    t.lexer.pop_state()
-    t.value = unichr(0x0008)
-    return t
-
-  def t_escaped_FORM_FEED_CHAR(self, t):
-    r'\x66'  # 'f'
-    t.lexer.pop_state()
-    t.value = unichr(0x000c)
-    return t
-
-  def t_escaped_CARRIAGE_RETURN_CHAR(self, t):
-    r'\x72'  # 'r'
-    t.lexer.pop_state()
-    t.value = unichr(0x000d)
-    return t
-
-  def t_escaped_LINE_FEED_CHAR(self, t):
-    r'\x6E'  # 'n'
-    t.lexer.pop_state()
-    t.value = unichr(0x000a)
-    return t
-
-  def t_escaped_TAB_CHAR(self, t):
-    r'\x74'  # 't'
-    t.lexer.pop_state()
-    t.value = unichr(0x0009)
-    return t
 
   def t_escaped_UNICODE_HEX(self, t):
     r'\x75[\x30-\x39,\x41-\x46,\x61-\x66]{4}'  # 'uXXXX'
@@ -213,14 +89,6 @@ class JsonLexer(object):
     return t
 
   def tokenize(self, data, *args, **kwargs):
-    '''Invoke the lexer on an input string an return the list of tokens.
-    This is relatively inefficient and should only be used for
-    testing/debugging as it slurps up all tokens into one list.
-    Args:
-      data: The input to be tokenized.
-    Returns:
-      A list of LexTokens
-    '''
     self.lexer.input(data)
     tokens = list()
     while True:
@@ -249,41 +117,18 @@ def end_line():
   sys.stdout.write('\n')
 
 class JsonParser(object):
-  '''A class-based wrapper around the ply.yacc instance.
-  The JsonParser takes the tokenized output from the JsonLexer and
-  parses it accoring to the JSON grammar rules.  The output is a
-  python data structure that represents the input data.
-  '''
 
   def __init__(self, lexer=None, **kwargs):
-    '''Constructs the JsonParser based on the grammar contained herein.
-    Successful construction builds the ply.yacc instance and sets
-    self.parser.
-    Args:
-      lexer: A ply.lex or JsonLexer instance that will produce JSON_TOKENS.
-    '''
-
     if lexer is not None:
       if isinstance(lexer, JsonLexer):
         self.lexer = lexer.lexer
       else:
-        # Assume that the lexer is a ply.lex instance or similar
         self.lexer = lexer
     else:
       self.lexer = JsonLexer().lexer
     self.parser = ply.yacc.yacc(module=self, **kwargs)
 
-  # The JsonParser uses the JSON_TOKENS elements as a contact between
-  # the lexer and the parser.
   tokens = JSON_TOKENS
-
-  # Define the parser
-  
-  #def p_text_object(self, p):
-  #  '''text : object'''
-
-  #def p_text_array(self, p):
-  #  '''text : array'''
   
   def p_value_string(self, p):
     '''value : string'''
@@ -467,48 +312,20 @@ class JsonParser(object):
            #   | ESCAPE LINE_FEED_CHAR
            #  | ESCAPE CARRIAGE_RETURN_CHAR
            #  | ESCAPE TAB_CHAR'''
-    # Because the subscript [-1] has special meaning for YaccProduction
-    # slices we use [len(p) - 1] to always take the last value.
-    # print "pepe"
-    # print ("p[l]: "+p[len(p)-1])
-    # print "fin pepe"
     p[0] = bytearray(p[len(p) - 1], 'utf8')
-
-  # def p_char_unicode_hex(self, p):
-  #   '''char : ESCAPE UNICODE_HEX'''
-  #   # This looks more complicated than it is.  The escaped string is of
-  #   # the form \uXXXX and is assigned to p[2].  We take the trailing
-  #   # XXXX string via p[2][1:], parse it as a radix 16 (hex) integer,
-  #   # and convert that to the corresponding unicode character.
-  #   p[0] = unichr(int(p[2][1:], 16))
 
   def p_error(self, p): 
     print( "Syntax error at '%s'" % p)
 
   # Invoke the parser
   def parse(self, data, lexer=None, *args, **kwargs):
-    '''Parse the input JSON data string into a python data structure.
-    Args:
-      data: An input data string
-      lexer:  An optional ply.lex instance that overrides the default lexer.
-    Returns:
-      A python dict or list representing the input JSON data.
-    '''
     if lexer is None:
       lexer = self.lexer
     return self.parser.parse(data, lexer=lexer, *args, **kwargs)
 
-# Maintain a reusable parser instance
 parser = None
 
 def parse(s):
-  '''Parse a string-like object and return the corresponding python structure.
-  
-  Args:
-    s: a string-like object
-  Returns:
-    A python dict or array
-  '''
   global parser
   if parser is None:
     parser = JsonParser()
@@ -516,17 +333,10 @@ def parse(s):
 
 
 def parse_file(f):
-  '''Parse a file-like object and return the corresponding python structure.
-  Args:
-    f: a file-like object
-  Returns:
-    A Python dict or array
-  '''
   return parse(f.read())
 
 
 def main(argv):
-  '''Parses JSON files or stdin and prints the python data structure.'''
   if len(argv) > 1:
     for filename in argv[1:]:
       parse_file(open(filename))
