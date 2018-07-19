@@ -192,6 +192,8 @@ class JsonParser(object):
   
   def p_value_string(self, p):
     '''value : string'''
+    #print (p[1])
+    p[0] = p[1]
   
   def p_value_number(self, p):
     '''value : number'''
@@ -223,6 +225,7 @@ class JsonParser(object):
   def p_not_empty_object(self, p):
     '''object : object_begin members object_end'''
     first_object = False
+    #print (p[1])
   
   def p_object_begin(self, p):
     '''object_begin : BEGIN_OBJECT'''
@@ -240,19 +243,39 @@ class JsonParser(object):
 
   def p_members_final(self, p):
     '''members : pair'''
+    #print (p[1])
+    #if type(p[1]) == type(None) and type(p[0]) == type(None) :
+    #  p[0] = []
+    #else:
+    p[0] = p[1]
     
   def p_members_not_final(self, p):
     '''members : pair_and_separator members'''
-    
+    #if type(p[0]) == type(None):
+    #    p[0] =  p[2]
+    #else:
+    #print(p[1])
+
+    print(p[2])
+    aux = p[1]+p[2]
+    to_set = set(aux)
+    #if len(to_set) != len(aux):
+    #  raise "dos claves iguales en el mismo nivel"    
+    p[0] =  p[1] + p[2]
+
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
+    p[0] = p[1]
     print_indentation()
   
   def p_pair(self, p):
     '''pair : key value_abst'''
+    #print (p[1])
+    p[0] = p[1]
 
   def p_value_abst(self, p):
     '''value_abst : value'''
+    p[0] = p[1]
     end_line()
     decrement_indentation()
 
@@ -261,6 +284,8 @@ class JsonParser(object):
     sys.stdout.write(':')
     #end_line()
     increment_indentation()
+    p[0] = p[1]
+    #print(p[1])
     #print_indentation()
   
   def p_elements(self, p):
@@ -353,6 +378,7 @@ class JsonParser(object):
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
     sys.stdout.write(p[2])
+    p[0] = [p[2]]
 
   def p_final_chars(self, p):
     '''chars : '''
