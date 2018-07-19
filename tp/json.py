@@ -445,9 +445,6 @@ class JsonParser(object):
 
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
-#    print_indentation()
-    #TODO: ESTO ESTÁ MAL
-    #sys.stdout.write("some_key")
     sys.stdout.write("\""+p[2]+"\"")
 
   def p_final_chars(self, p):
@@ -456,7 +453,7 @@ class JsonParser(object):
     
   def p_not_final_chars(self, p):
     '''chars : chars char'''
-    p[0] = p[1] + p[2]
+    p[0] = p[1]  + p[2].decode('utf-8') 
     
   def p_char(self, p):
     '''char : UNESCAPED'''
@@ -473,7 +470,7 @@ class JsonParser(object):
     # print "pepe"
     # print ("p[l]: "+p[len(p)-1])
     # print "fin pepe"
-    p[0] = bytearray(p[len(p) - 1])
+    p[0] = bytearray(p[len(p) - 1], 'utf8')
 
   # def p_char_unicode_hex(self, p):
   #   '''char : ESCAPE UNICODE_HEX'''
