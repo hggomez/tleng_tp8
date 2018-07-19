@@ -32,4 +32,15 @@ Los tokens que utilizamos son los siguientes:
 
 ##Parser
 
+Una vez que se obtiene la cadena _tokenizada_, solo resta hacer la traducción al lenguaje _YAML_. Para este fin, mantenemos una variable global que indica el nivel de _anidamiento_, lo cual necesitamos para traducir cada terminal con el nivel de _indentación_ correspondiente. También tuvimos que agregar un atributo sintetizado que permite chequear que no haya claves repetidas dentro de un diccionario de _JSON_, ya que _YAML_ no soporta esto. 
+Al encontrarnos con dos claves iguales dentro de un mismo diccionario dejamos de traducir. Gracias a esto es que podemos detectar en qué parte del _JSON_ se produjo el error.
+
+
+##Requerimientos de software
+
+- Python 3.5+
+- Ply 3.11+
+
+La cadena que se desee traducir deberá estar almacenada en un archivo. Para traducirla se deberá ejecutar el siguiente comando: `python3 json.py nombredelarchivo`
+
 
