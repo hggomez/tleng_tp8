@@ -224,6 +224,11 @@ class JsonParser(object):
 
   def p_not_empty_object(self, p):
     '''object : object_begin members object_end'''
+    aux = p[2]
+    to_set = set(aux)
+    #print(p[2])
+    if len(to_set) != len(aux):
+      raise "dos claves iguales en el mismo nivel"   
     first_object = False
     #print (p[1])
   
@@ -256,9 +261,10 @@ class JsonParser(object):
     #else:
     #print(p[1])
 
-    print(p[2])
-    aux = p[1]+p[2]
-    to_set = set(aux)
+    #print(p[2])
+    #print(p[1])
+    #aux = p[2]
+    #to_set = set(aux)
     #if len(to_set) != len(aux):
     #  raise "dos claves iguales en el mismo nivel"    
     p[0] =  p[1] + p[2]
