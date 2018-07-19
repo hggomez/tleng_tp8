@@ -317,8 +317,9 @@ class JsonParser(object):
   
   def p_object_begin(self, p):
     '''object_begin : BEGIN_OBJECT'''
-    increment_indentation()
+    #increment_indentation()
     end_line()
+    increment_indentation()
     print_indentation()
 
   def p_object_end(self, p):
@@ -346,9 +347,9 @@ class JsonParser(object):
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
     sys.stdout.write(':')
-    end_line()
+    #end_line()
     increment_indentation()
-    print_indentation()
+    #print_indentation()
   
   def p_elements(self, p):
     '''elements : 
@@ -376,10 +377,14 @@ class JsonParser(object):
 
   def p_array_begin(self, p):
     '''array_begin :  BEGIN_ARRAY'''
+    end_line()
+    increment_indentation()
+    print_indentation()
     sys.stdout.write('- ')
 
   def p_array_end(self, p):
     '''array_end : END_ARRAY'''
+    decrement_indentation()
     
   def p_number_positive(self, p):
     '''number : integer
