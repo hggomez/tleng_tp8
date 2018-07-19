@@ -16,19 +16,38 @@ El objetivo de este trabajo es crear un traductor que tome cadenas válidas en e
 
 Tomamos la gramática definida en la [página oficial de JSON](https://www.json.org).
 
-
 ##Lexer
 
 Una vez que terminamos con la gramática implementamos el lexer. Este se encarga de transformar la cadena recibida en terminales de nuestra gramática, para que luego el parser pueda reconstruir el árbol.
 Los distintos terminales son asociados a tokens que representan de manera más general a los mismos.
 
 Los tokens que utilizamos son los siguientes:
-
-* true, false, ...
-
-* enumerar más!
-
-* poner todos pls
+* BEGIN_ARRAY, representando al [
+* BEGIN_OBJECT, representando al {
+* END_ARRAY, representa el fin de un array, ]
+* END_OBJECT, }
+* NAME_SEPARATOR, representa el :
+* VALUE_SEPARATOR, `,`
+* QUOTATION_MARK, `"`
+* FALSE, directamente la string `false`
+* TRUE, `true`
+* NULL, `null`
+* DECIMAL_POINT, `.`
+* DIGITS, representando los dígitos del 0 al 9
+* E, `e`, como exponente
+* MINUS, `-`, como resta o prefijo de un negativo
+* PLUS, `+`, similarmente
+* ZERO, `0`
+* UNESCAPED, representa cualquier caracter no escapado
+* ESCAPE, representa al caracter `\`, el lexer entra en el estado en que considera la string como escapada
+* REVERSE_SOLIDUS, en un estado escapado, representa al caracter `\`
+* SOLIDUS, `/`, similarmente
+* BACKSPACE_CHAR, `b`, ídem
+* FORM_FEED_CHAR, `f`, ídem
+* LINE_FEED_CHAR, `n`, ídem
+* CARRIAGE_RETURN_CHAR, `r`, ídem
+* TAB_CHAR, `t`, ídem
+* UNICODE_HEX, en un estado escapado representa a las strings del tipo `uXXXX`, las cuales actualmente no se interpretan especialmente.
 
 ##Parser
 
