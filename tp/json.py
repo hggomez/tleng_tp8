@@ -323,22 +323,16 @@ class JsonParser(object):
 
   def p_object_end(self, p):
     '''object_end : END_OBJECT'''
-    end_line()
     decrement_indentation()
 
   def p_members_final(self, p):
     '''members : pair'''
-    # end_line()
-    # print_indentation()
     
   def p_members_not_final(self, p):
     '''members : pair_and_separator members'''
-    # end_line()
-    # print_indentation()
     
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
-    end_line()
     print_indentation()
   
   def p_pair(self, p):
@@ -346,8 +340,8 @@ class JsonParser(object):
 
   def p_value_abst(self, p):
     '''value_abst : value'''
-    decrement_indentation()
     end_line()
+    decrement_indentation()
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
@@ -363,25 +357,21 @@ class JsonParser(object):
    
   def p_elements_not_final(self, p):
     '''elements_not_final : elements value_abst_elements VALUE_SEPARATOR'''
-#    sys.stdout.write('\n')
     print_indentation()
     sys.stdout.write('- ')
 
   def p_value_abst_elements(self, p):
     '''value_abst_elements : value'''
-    #decrement_indentation()
     end_line()
 
   def p_elements_final(self, p):
     '''elements_final : elements value'''
-    #sys.stdout.write('\n') #podria no estar
   
   def p_array(self, p):
     '''array : array_begin elements array_end'''
 
   def p_empty_array(self, p):
     '''array :  BEGIN_ARRAY END_ARRAY'''
-#    print_indentation()
     sys.stdout.write('[]')
 
   def p_array_begin(self, p):
