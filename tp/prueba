@@ -1,9 +1,15 @@
 {
-    "key_1": {"another_array":[true,false,true]},
-    "key_1": false,
-    "key_3": true,
-    "key_3": "un_string",
-    "key_4": [true,true,true],
-    "key5": "holas",
-    "key6": false
+    "key_1_l1": {"key_1_l2":[true,false,true]
+                },
+    "key_2_l1": false,
+    "key_3_l1": true,
+    "key_4_l1": "value_l1",
+    "key_5_l1": [true,true,true],
+    "key_6_l1": {"key_6_l2": {
+                                "key_6_l3":{
+                                            "key_6_l4":[true,false,true]
+                                            }
+                             }
+                },
+    "key_7_l1": "árácté+acas"
 }
