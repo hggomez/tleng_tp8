@@ -21,7 +21,17 @@ JSON_TOKENS = [
   'MINUS',
   'PLUS',
   'ZERO',
-  'UNESCAPED'
+  'UNESCAPED',
+  'ESCAPE',
+  # Escaped state tokens
+  'REVERSE_SOLIDUS',
+  'SOLIDUS',
+  'BACKSPACE_CHAR',
+  'FORM_FEED_CHAR',
+  'LINE_FEED_CHAR',
+  'CARRIAGE_RETURN_CHAR',
+  'TAB_CHAR',
+  'UNICODE_HEX'
 ]
 
 
@@ -80,6 +90,11 @@ class JsonLexer(object):
     t.lexer.pop_state()
     return t
 
+  def t_string_ESCAPE(self, t):
+    r'\x5C'  # '\'
+    t.lexer.push_state('escaped')
+    return t
+  
   # Don't skip over any tokens inside the escaped state
   t_escaped_ignore = ''
 
