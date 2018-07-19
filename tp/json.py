@@ -180,31 +180,31 @@ class JsonLexer(object):
   def t_escaped_BACKSPACE_CHAR(self, t):
     r'\x62'  # 'b'
     t.lexer.pop_state()
-    t.value = unichr(0x0008)
+    t.value = '\\b'
     return t
 
   def t_escaped_FORM_FEED_CHAR(self, t):
     r'\x66'  # 'f'
     t.lexer.pop_state()
-    t.value = unichr(0x000c)
+    t.value = '\\f'
     return t
 
   def t_escaped_CARRIAGE_RETURN_CHAR(self, t):
     r'\x72'  # 'r'
     t.lexer.pop_state()
-    t.value = unichr(0x000d)
+    t.value = '\\r'
     return t
 
   def t_escaped_LINE_FEED_CHAR(self, t):
     r'\x6E'  # 'n'
     t.lexer.pop_state()
-    t.value = unichr(0x000a)
+    t.value = '\\n'
     return t
 
   def t_escaped_TAB_CHAR(self, t):
     r'\x74'  # 't'
     t.lexer.pop_state()
-    t.value = unichr(0x0009)
+    t.value = '\\t'
     return t
 
   def t_escaped_UNICODE_HEX(self, t):
@@ -458,15 +458,15 @@ class JsonParser(object):
     p[0] = p[1]  + p[2].decode('utf-8') 
     
   def p_char(self, p):
-    '''char : UNESCAPED'''
-           # | ESCAPE QUOTATION_MARK
-           # | ESCAPE REVERSE_SOLIDUS
-           # | ESCAPE SOLIDUS
-           # | ESCAPE BACKSPACE_CHAR
-           # | ESCAPE FORM_FEED_CHAR
-           #   | ESCAPE LINE_FEED_CHAR
-           #  | ESCAPE CARRIAGE_RETURN_CHAR
-           #  | ESCAPE TAB_CHAR'''
+    '''char : UNESCAPED
+           | ESCAPE QUOTATION_MARK
+           | ESCAPE REVERSE_SOLIDUS
+           | ESCAPE SOLIDUS
+           | ESCAPE BACKSPACE_CHAR
+           | ESCAPE FORM_FEED_CHAR
+             | ESCAPE LINE_FEED_CHAR
+            | ESCAPE CARRIAGE_RETURN_CHAR
+            | ESCAPE TAB_CHAR'''
     # Because the subscript [-1] has special meaning for YaccProduction
     # slices we use [len(p) - 1] to always take the last value.
     # print "pepe"
