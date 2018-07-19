@@ -327,7 +327,7 @@ class JsonParser(object):
     decrement_indentation()
 
   def p_members_final(self, p):
-    '''members : pair''' 
+    '''members : pair'''
     # end_line()
     # print_indentation()
     
@@ -454,26 +454,29 @@ class JsonParser(object):
     p[0] = p[1] + p[2]
     
   def p_char(self, p):
-    '''char : UNESCAPED
-            | ESCAPE QUOTATION_MARK
-            | ESCAPE REVERSE_SOLIDUS
-            | ESCAPE SOLIDUS
-            | ESCAPE BACKSPACE_CHAR
-            | ESCAPE FORM_FEED_CHAR
-            | ESCAPE LINE_FEED_CHAR
-            | ESCAPE CARRIAGE_RETURN_CHAR
-            | ESCAPE TAB_CHAR'''
+    '''char : UNESCAPED'''
+           # | ESCAPE QUOTATION_MARK
+           # | ESCAPE REVERSE_SOLIDUS
+           # | ESCAPE SOLIDUS
+           # | ESCAPE BACKSPACE_CHAR
+           # | ESCAPE FORM_FEED_CHAR
+           #   | ESCAPE LINE_FEED_CHAR
+           #  | ESCAPE CARRIAGE_RETURN_CHAR
+           #  | ESCAPE TAB_CHAR'''
     # Because the subscript [-1] has special meaning for YaccProduction
     # slices we use [len(p) - 1] to always take the last value.
-    p[0] = p[len(p) - 1]
+    # print "pepe"
+    # print ("p[l]: "+p[len(p)-1])
+    # print "fin pepe"
+    p[0] = bytearray(p[len(p) - 1])
 
-  def p_char_unicode_hex(self, p):
-    '''char : ESCAPE UNICODE_HEX'''
-    # This looks more complicated than it is.  The escaped string is of
-    # the form \uXXXX and is assigned to p[2].  We take the trailing
-    # XXXX string via p[2][1:], parse it as a radix 16 (hex) integer,
-    # and convert that to the corresponding unicode character.
-    p[0] = unichr(int(p[2][1:], 16))
+  # def p_char_unicode_hex(self, p):
+  #   '''char : ESCAPE UNICODE_HEX'''
+  #   # This looks more complicated than it is.  The escaped string is of
+  #   # the form \uXXXX and is assigned to p[2].  We take the trailing
+  #   # XXXX string via p[2][1:], parse it as a radix 16 (hex) integer,
+  #   # and convert that to the corresponding unicode character.
+  #   p[0] = unichr(int(p[2][1:], 16))
 
   def p_error(self, p): 
     print( "Syntax error at '%s'" % p)
