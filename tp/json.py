@@ -362,14 +362,19 @@ class JsonParser(object):
                 | elements_final'''
    
   def p_elements_not_final(self, p):
-    '''elements_not_final : elements value VALUE_SEPARATOR'''
+    '''elements_not_final : elements value_abst_elements VALUE_SEPARATOR'''
 #    sys.stdout.write('\n')
     print_indentation()
     sys.stdout.write('- ')
 
+  def p_value_abst_elements(self, p):
+    '''value_abst_elements : value'''
+    #decrement_indentation()
+    end_line()
+
   def p_elements_final(self, p):
     '''elements_final : elements value'''
-#    sys.stdout.write('\n') #podria no estar
+    #sys.stdout.write('\n') #podria no estar
   
   def p_array(self, p):
     '''array : array_begin elements array_end'''
