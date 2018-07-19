@@ -215,13 +215,15 @@ class JsonParser(object):
 
   def p_value_null(self, p):
     '''value : NULL'''
-    sys.stdout.write('null')
-
+    #sys.stdout.write('null')
+    #no hay que imprimir nada
+    
   def p_empty_object(self, p):
     '''object : BEGIN_OBJECT END_OBJECT'''
     global first_object
     first_object = False
-
+    sys.stdout.write("{}\n")
+    
   def p_not_empty_object(self, p):
     '''object : object_begin members object_end'''
     aux = p[2]
@@ -237,14 +239,14 @@ class JsonParser(object):
     #increment_indentation()
     global first_object
     end_line()
-    if not (first_object):
-      increment_indentation() 
+#    if not (first_object):
+    increment_indentation() 
     print_indentation()
 
   def p_object_end(self, p):
     '''object_end : END_OBJECT'''
-    if not (first_object):
-      decrement_indentation()
+#    if not (first_object):
+    decrement_indentation()
 
   def p_members_final(self, p):
     '''members : pair'''
@@ -361,15 +363,15 @@ class JsonParser(object):
 
   def p_exp(self, p):
     '''exp : E DIGITS'''
-    p[0] = p[2]
+    p[0] = int(p[2])
     
   def p_exp_positive(self, p):
     '''exp : E PLUS DIGITS'''
-    p[0] = p[3]
+    p[0] = int(p[3])
     
   def p_frac(self, p):
     '''frac : DECIMAL_POINT DIGITS'''
-    p[0] = int('.'+str(p[2]))
+    p[0] = float('0.'+str(p[2]))
     
   def p_int_zero(self, p):
     '''int : ZERO'''
