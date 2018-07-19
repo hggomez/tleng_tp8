@@ -232,6 +232,7 @@ class JsonLexer(object):
 
 
 indentation = 0
+first_object = True
 def print_indentation():
   global indentation
   sys.stdout.write(' '*2*indentation)
@@ -311,20 +312,26 @@ class JsonParser(object):
 
   def p_empty_object(self, p):
     '''object : BEGIN_OBJECT END_OBJECT'''
+    global first_object
+    first_object = False
 
   def p_not_empty_object(self, p):
     '''object : object_begin members object_end'''
+    first_object = False
   
   def p_object_begin(self, p):
     '''object_begin : BEGIN_OBJECT'''
     #increment_indentation()
+    global first_object
     end_line()
-    increment_indentation()
+    if not (first_object):
+      increment_indentation() 
     print_indentation()
 
   def p_object_end(self, p):
     '''object_end : END_OBJECT'''
-    decrement_indentation()
+    if not (first_object):
+      decrement_indentation()
 
   def p_members_final(self, p):
     '''members : pair'''

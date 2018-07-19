@@ -11,5 +11,20 @@
                                             }
                              }
                 },
-    "key_7_l1": "árácté+acas"
+    "key_7_l1": "árácté+acas",
+    "key_8_l1": {
+                    "key_1_l2": {"key_1_l3":[true,false,true]
+                                },
+                    "key_2_l2": false,
+                    "key_3_l2": true,
+                    "key_4_l2": "value_l2",
+                    "key_5_l2": [true,true,true],
+                    "key_6_l2": {"key_6_l3": {
+                                                "key_6_l4":{
+                                                            "key_6_l5":[true,false,true]
+                                                            }
+                                             }
+                                },
+                    "key_7_l2": "árácté+acas"
+                }
 }
