@@ -193,11 +193,12 @@ class JsonParser(object):
   def p_value_string(self, p):
     '''value : string'''
     #print (p[1])
+#    sys.stdout.write("\""+p[1]+"\"")
     p[0] = p[1]
   
   def p_value_number(self, p):
     '''value : number'''
-    print(p[1])
+    sys.stdout.write(str(p[1]))
 
   def p_value_empty_object(self, p):
     '''value : object'''
