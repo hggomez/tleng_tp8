@@ -317,20 +317,29 @@ class JsonParser(object):
   
   def p_object_begin(self, p):
     '''object_begin : BEGIN_OBJECT'''
+    increment_indentation()
+    end_line()
+    print_indentation()
 
   def p_object_end(self, p):
     '''object_end : END_OBJECT'''
     end_line()
-
+    decrement_indentation()
 
   def p_members_final(self, p):
     '''members : pair''' 
-
+    # end_line()
+    # print_indentation()
+    
   def p_members_not_final(self, p):
     '''members : pair_and_separator members'''
-  
+    # end_line()
+    # print_indentation()
+    
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
+    end_line()
+    print_indentation()
   
   def p_pair(self, p):
     '''pair : key value_abst'''
@@ -431,6 +440,7 @@ class JsonParser(object):
 
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
+#    print_indentation()
     #TODO: ESTO ESTÁ MAL
     #sys.stdout.write("some_key")
     sys.stdout.write("\""+p[2]+"\"")
