@@ -362,7 +362,7 @@ class JsonParser(object):
 
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
-    sys.stdout.write(p[2])
+    sys.stdout.write("\""+p[2]+"\"")
     p[0] = [p[2]]
 
   def p_final_chars(self, p):
