@@ -197,7 +197,7 @@ class JsonParser(object):
   
   def p_value_number(self, p):
     '''value : number'''
-    sys.stdout.write(str(p[1]))
+    p[0] = str(p[1])
 
   def p_value_empty_object(self, p):
     '''value : object'''
@@ -207,18 +207,19 @@ class JsonParser(object):
   
   def p_value_true(self, p):
     '''value : TRUE'''
-    sys.stdout.write('true')
-    
+    p[0] = 'true'
+
   def p_value_false(self, p):
     '''value : FALSE'''
-    sys.stdout.write('false')
+    p[0] = 'false'
 
   def p_value_null(self, p):
     '''value : NULL'''
+    p[0] = 'null'
 
   def p_empty_object(self, p):
     '''object : BEGIN_OBJECT END_OBJECT'''
-    sys.stdout.write("{}\n")
+    p[0] = "{}"
     
   def p_not_empty_object(self, p):
     '''object : object_begin members object_end'''
