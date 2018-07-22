@@ -225,9 +225,9 @@ class JsonParser(object):
   def p_not_empty_object(self, p):
     '''object : object_begin members object_end'''
     aux = p[2]
-    to_set = set(aux)
-    #if len(to_set) != len(aux):
-    #  raise "dos claves iguales en el mismo nivel"
+    aux_set = set([pair.split(":")[0] for pair in aux])
+    if len(aux_set) != len(aux):
+      raise "dos claves iguales en el mismo nivel"
   
   def p_object_begin(self, p):
     '''object_begin : BEGIN_OBJECT'''
