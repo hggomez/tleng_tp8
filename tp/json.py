@@ -325,7 +325,7 @@ class JsonParser(object):
     
   def p_integer_exp(self, p):
     '''integer : int exp'''
-    p[0] = p[1] * (10 ** p[2])
+    p[0] = str(p[1])+"e"+str(p[2])
     
   def p_number_float(self, p):
     '''float : int frac'''
@@ -333,7 +333,7 @@ class JsonParser(object):
     
   def p_number_float_exp(self, p):
     '''float : int frac exp'''
-    p[0] = (p[1] + p[2]) * (10 ** p[3])
+    p[0] = str(p[1] + p[2])+"e"+str(p[3])
     
   def p_exp_negative(self, p):
     '''exp : E MINUS DIGITS'''
