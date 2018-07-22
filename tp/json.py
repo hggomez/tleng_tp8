@@ -269,7 +269,10 @@ class JsonParser(object):
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
-    sys.stdout.write(':')
+    if(p[1][0][0] == "-"):
+      sys.stdout.write("\"" + p[1][0] + "\"" + ': ')
+    else:
+      sys.stdout.write(p[1][0] + ': ')
     #end_line()
     increment_indentation()
     p[0] = p[1]
@@ -363,7 +366,10 @@ class JsonParser(object):
 
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
-    sys.stdout.write("\""+p[2]+"\"")
+    #if(p[2][0] == "-"):
+    #  sys.stdout.write("\""+p[2]+"\"")
+    #else:
+    #  sys.stdout.write(p[2])
     p[0] = [p[2]]
 
   def p_final_chars(self, p):
