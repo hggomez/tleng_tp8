@@ -193,6 +193,7 @@ class JsonParser(object):
   
   def p_value_string(self, p):
     '''value : string'''
+    print(p[1])
     p[0] = p[1]
   
   def p_value_number(self, p):
@@ -225,8 +226,8 @@ class JsonParser(object):
     '''object : object_begin members object_end'''
     aux = p[2]
     to_set = set(aux)
-    if len(to_set) != len(aux):
-      raise "dos claves iguales en el mismo nivel"   
+    #if len(to_set) != len(aux):
+    #  raise "dos claves iguales en el mismo nivel"
   
   def p_object_begin(self, p):
     '''object_begin : BEGIN_OBJECT'''
@@ -270,10 +271,10 @@ class JsonParser(object):
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
-    if(p[1][0][0] == "-"):
-      sys.stdout.write("\"" + p[1][0] + "\"" + ': ')
+    if(p[1][0] == "-"):
+      sys.stdout.write("\"" + p[1] + "\"" + ': ')
     else:
-      sys.stdout.write(p[1][0] + ': ')
+      sys.stdout.write(p[1] + ': ')
     #end_line()
     increment_indentation()
     p[0] = p[1]
@@ -371,7 +372,7 @@ class JsonParser(object):
     #  sys.stdout.write("\""+p[2]+"\"")
     #else:
     #  sys.stdout.write(p[2])
-    p[0] = [p[2]]
+    p[0] = p[2]
 
   def p_final_chars(self, p):
     '''chars : '''
