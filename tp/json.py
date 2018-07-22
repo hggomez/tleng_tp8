@@ -160,7 +160,7 @@ class JsonLexer(object):
 
 
 indentation = 0
-first_object = True
+objects_count = 0
 
 def print_indentation():
   global indentation
@@ -218,8 +218,6 @@ class JsonParser(object):
 
   def p_empty_object(self, p):
     '''object : BEGIN_OBJECT END_OBJECT'''
-    global first_object
-    first_object = False
     sys.stdout.write("{}\n")
     
   def p_not_empty_object(self, p):
@@ -228,18 +226,21 @@ class JsonParser(object):
     to_set = set(aux)
     if len(to_set) != len(aux):
       raise "dos claves iguales en el mismo nivel"   
-    first_object = False
   
   def p_object_begin(self, p):
     '''object_begin : BEGIN_OBJECT'''
-    #increment_indentation()
-    global first_object
+    global objects_count
+    objects_count+=1
     end_line()
     increment_indentation() 
     print_indentation()
 
   def p_object_end(self, p):
     '''object_end : END_OBJECT'''
+    global objects_count
+    objects_count-=1
+    if objects_count == 0:
+      end_line()
     decrement_indentation()
 
   def p_members_final(self, p):
