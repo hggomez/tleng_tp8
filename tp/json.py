@@ -161,6 +161,7 @@ class JsonLexer(object):
 
 indentation = 0
 first_object = True
+
 def print_indentation():
   global indentation
   sys.stdout.write(' '*2*indentation)
@@ -192,8 +193,6 @@ class JsonParser(object):
   
   def p_value_string(self, p):
     '''value : string'''
-    #print (p[1])
-#    sys.stdout.write("\""+p[1]+"\"")
     p[0] = p[1]
   
   def p_value_number(self, p):
@@ -216,9 +215,7 @@ class JsonParser(object):
 
   def p_value_null(self, p):
     '''value : NULL'''
-    #sys.stdout.write('null')
-    #no hay que imprimir nada
-    
+
   def p_empty_object(self, p):
     '''object : BEGIN_OBJECT END_OBJECT'''
     global first_object
@@ -229,64 +226,45 @@ class JsonParser(object):
     '''object : object_begin members object_end'''
     aux = p[2]
     to_set = set(aux)
-    #print(p[2])
     if len(to_set) != len(aux):
       raise "dos claves iguales en el mismo nivel"   
     first_object = False
-    #print (p[1])
   
   def p_object_begin(self, p):
     '''object_begin : BEGIN_OBJECT'''
     #increment_indentation()
     global first_object
     end_line()
-#    if not (first_object):
     increment_indentation() 
     print_indentation()
 
   def p_object_end(self, p):
     '''object_end : END_OBJECT'''
-#    if not (first_object):
     decrement_indentation()
 
   def p_members_final(self, p):
     '''members : pair'''
-    #print (p[1])
-    #if type(p[1]) == type(None) and type(p[0]) == type(None) :
-    #  p[0] = []
-    #else:
     p[0] = p[1]
     
   def p_members_not_final(self, p):
     '''members : pair_and_separator members'''
-    #if type(p[0]) == type(None):
-    #    p[0] =  p[2]
-    #else:
-    #print(p[1])
-
-    #print(p[2])
-    #print(p[1])
-    #aux = p[2]
-    #to_set = set(aux)
-    #if len(to_set) != len(aux):
-    #  raise "dos claves iguales en el mismo nivel"    
     p[0] =  p[1] + p[2]
 
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
     p[0] = p[1]
+    end_line()
     print_indentation()
   
   def p_pair(self, p):
     '''pair : key value_abst'''
-    #print (p[1])
     p[0] = p[1]
 
   def p_value_abst(self, p):
     '''value_abst : value'''
     p[0] = p[1]
-    end_line()
     decrement_indentation()
+
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
@@ -294,8 +272,6 @@ class JsonParser(object):
     #end_line()
     increment_indentation()
     p[0] = p[1]
-    #print(p[1])
-    #print_indentation()
   
   def p_elements(self, p):
     '''elements : 
@@ -407,11 +383,6 @@ class JsonParser(object):
              | ESCAPE LINE_FEED_CHAR
             | ESCAPE CARRIAGE_RETURN_CHAR
             | ESCAPE TAB_CHAR'''
-    # Because the subscript [-1] has special meaning for YaccProduction
-    # slices we use [len(p) - 1] to always take the last value.
-    # print "pepe"
-    # print ("p[l]: "+p[len(p)-1])
-    # print "fin pepe"
     p[0] = bytearray(p[len(p) - 1], 'utf8')
 
   def p_error(self, p): 
