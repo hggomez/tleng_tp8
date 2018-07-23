@@ -43,9 +43,8 @@ Con la gramática propuesta anteriormente (Que se sabe LALR), no se genera ning�
 
 ##Lexer
 
-Una vez terminada la gramática implementamos el lexer. Este se encarga de transformar la cadena recibida en terminales de nuestra gramática, para que luego el parser pueda reconstruir el árbol.
-
-Los tokens que utilizamos son los siguientes:
+Un lexer es un programa que se encarga de, dado un texto como input, transformarlo en "tokens" válidos. Decimos por eso que es el encargado de "tokenizar" la entrada en los nodos terminales de nuestra gramática.
+Los tokens utilizados son los siguientes:
 * BEGIN_ARRAY, representando al [
 * BEGIN_OBJECT, representando al {
 * END_ARRAY, representa el fin de un array, ]
