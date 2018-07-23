@@ -257,7 +257,7 @@ class JsonParser(object):
   def p_not_empty_object(self, p):
     '''object : BEGIN_OBJECT members END_OBJECT'''
     aux = p[2]
-    aux = ["  "+member for member in aux]
+    aux = ["WTF"]+["  "+member for member in aux]
     #print("DICT: ", aux)
     p[0] = aux
 
