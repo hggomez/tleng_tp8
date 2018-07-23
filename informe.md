@@ -84,7 +84,8 @@ También tuvimos que chequear en la producción que permite generar un diccionar
 *prueba2 es un json normal con varios niveles de anidamiento
 *prueba3 prueba los arreglos en distintos niveles
 *prueba4 es la prueba brindada por la cátedra
-*prueba5 pone a prueba _doble quotes_ para los valores que poseen '\n'
+*prueba5 captura los casos en donde los valores que poseen '\n' (_doble quotes_) 
+*prueba6 debería fallar al poseer dos claves iguales en el mismo nivel
 
 ##Requerimientos de software
 
