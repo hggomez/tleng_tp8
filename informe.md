@@ -11,12 +11,11 @@ Gonzalez, Juan | 324/14 | `gonzalezjuan.ab@gmail.com`
 ##Introducción
 
 El objetivo de este trabajo es crear un traductor que tome cadenas válidas en el lenguaje _JSON_ y las traduzca al lenguaje YAML, teniendo en cuenta que _JSON_ soporta claves repetidas dentro de los diccionarios y YAML no; en cuyo caso la traducción no será posible. 
-Utilizamos la biblioteca _ply_ debido a que utiliza gramáticas _LALR_ y ya teníamos una. Esto último puede verificarse con _ply_ mismo ya que si encontrara conflictos en la gramática, lo anunciaría.
 
 ##Gramática:
 
 Tomamos como base la gramática definida en la [página oficial de JSON](https://www.json.org).
-Ésta gramática fue modificada a medida que se fue avanzando el trabajo por conveniencia. La gramatica final resultante fué:
+La misma fue modificada a medida que se fue avanzando en el trabajo por conveniencia. La resultante fue:
 
 BEGIN -> VALUE
 VALUE -> str
@@ -39,8 +38,8 @@ ARRAY -> [ELEMENTS]
 ARRAY -> []
 
 Notar que por claridad hemos resumido los strings bajo 'str' y los numeros bajo 'number'.
-Antes que nada, es importante aclarar que PLY es una herramienta para parsers LALR y además, brinda la posibilidad de arrojar una advertencia a la hora de generar las tablas de action y go to para una gramática con conflictos.
-Con la gramática propuesta anteriormente (Que se sabe LALR), no se genera ningún conflicto de cualquier índole.
+Antes que nada, es importante aclarar que _PLY_ es una herramienta para parsers _LALR_ que además, brinda la posibilidad de arrojar una advertencia a la hora de generar las tablas de _action_ y _go_to_ para una gramática con conflictos.
+Esto nos permitió verificar que la gramática resultante fuera _LALR_ ya que no se generó ningún conflicto en _PLY_.
 
 ##Lexer
 
