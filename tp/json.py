@@ -271,44 +271,24 @@ class JsonParser(object):
 
   def p_members_not_final(self, p):
     '''members : pair_and_separator members'''
-    #print(p[1])
-    #print('************')
-    #print(p[2][0])
-    #print('+++++++++++')
     p[0] =  [p[1]] + p[2]
 
   def p_members_final(self, p):
     '''members : pair'''
-    #print(p[1])
-    aux = [p[1]]
-    #print(p[1])
-    #print(p[1])
-    p[0] = aux
-    #print(aux)
-    
+    p[0] = [p[1]]
+
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
     p[0] = p[1]
-    #print(p[1])
-    #print('___________________')
-    #end_line()
-    #print_indentation()
-  
+
   def p_pair(self, p):
     '''pair : key value'''
-    #print(p[2])
-    #print(p[1]+p[2])
     p[0] = p[1]+p[2]
-    #p[0] = p[1]
-    #p[0] = 
-    #print(p[1])
-    #print(p[2])
-    #print(p[2])
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
     if(p[1][0] == "-"):
-      key = "\"" + p[1][0] + "\""
+      key = "\"" + p[1] + "\""
     else:
       key = p[1]
     key = key + ': '
