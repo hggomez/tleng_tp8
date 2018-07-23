@@ -218,7 +218,7 @@ class JsonParser(object):
   
   def p_begin(self,p):
     '''pepe : value'''
-    print("WASABI:")
+    print("THEFINALLIST:", p[1])
     for line in p[1]:
       print(line)
 
@@ -339,7 +339,7 @@ class JsonParser(object):
   def p_number_positive(self, p):
     '''number : integer
               | float'''
-    p[0] = p[1]
+    p[0] = str(p[1])
     
   def p_number_negative(self, p):
     '''number : MINUS integer
