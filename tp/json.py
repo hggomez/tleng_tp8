@@ -218,7 +218,9 @@ class JsonParser(object):
   
   def p_begin(self,p):
     '''pepe : value'''
-    print("WASABI:",p[1])
+    print("WASABI:")
+    for line in p[1]:
+      print(line)
 
   def p_value_string(self, p):
     '''value : string'''
