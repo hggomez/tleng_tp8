@@ -163,6 +163,15 @@ class JsonLexer(object):
 indentation = 0
 objects_count = 0
 
+def indentar_de_nuevo(str):
+  res = ''
+  for c in str:
+    if c ==' ':
+      res= res+'  '
+    else:
+      res = res+c
+  return res
+
 def print_indentation():
   global indentation
   sys.stdout.write(' '*2*indentation)
@@ -218,9 +227,7 @@ class JsonParser(object):
 
   def p_value_empty_object(self, p):
     '''value : object'''
-    #sys.stdout.write(p[1])
-    p[0] = p[1]+'**'
-    #print('--'+p[0]+'--')
+    p[0] = p[1]
 
   def p_value_array(self, p):
     '''value : array'''
@@ -248,7 +255,18 @@ class JsonParser(object):
     aux_set = set([re.split(r'[^\\]"\s*:\s*', pair)[0] for pair in aux])
     if len(aux_set) != len(aux):
       raise "Dos claves iguales en el mismo nivel"
-    p[0] = ('\n').join(aux)
+    #print(aux)
+    if len(aux)==1:
+      aux = indentar_de_nuevo(aux[0])
+      aux = '\n '+aux
+      #sys.stdout.write(aux)
+
+    else:
+      aux2 = []
+      for e in aux:
+        aux2.append(indentar_de_nuevo(e))
+      aux = ('  ').join(aux2)
+    p[0] = ('\n')+aux
 
   def p_members_not_final(self, p):
     '''members : pair_and_separator members'''
@@ -292,7 +310,7 @@ class JsonParser(object):
       key = "\"" + p[1][0] + "\""
     else:
       key = p[1]
-    key = key + ': '
+    key = key + ':'
     p[0] = key
 
   def p_elements_final(self, p):

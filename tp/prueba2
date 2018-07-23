@@ -1,6 +1,12 @@
 {
     "key_1": {
-        "l2": true,
-        "l2": false
+        "k2_l2": {
+            "k3_l3":{
+                "k4_l4": true,
+                "k5_l4": true,
+                "k6_l4": true,
+                "k7_l4": true
+            }
+        }
     }
 }
