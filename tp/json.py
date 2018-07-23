@@ -217,8 +217,9 @@ class JsonParser(object):
 
   def p_value_empty_object(self, p):
     '''value : object'''
-    #print(p[1])
-    p[0] = p[1]
+    #sys.stdout.write(p[1])
+    p[0] = p[1]+'**'
+    #print('--'+p[0]+'--')
 
   def p_value_array(self, p):
     '''value : array'''
@@ -244,7 +245,12 @@ class JsonParser(object):
     '''object : BEGIN_OBJECT members END_OBJECT'''
     aux = p[2]
     #print(aux)
-    p[0] = ('./').join(aux)
+    aux = agregar_indentacion(aux)
+    #print(aux)
+    aux = ('\n').join(aux)
+    #print(aux)
+    p[0] = aux
+
     #aux = p[2]
     #to_set = set(aux)
     #if len(to_set) != len(aux):
@@ -256,11 +262,17 @@ class JsonParser(object):
 
   def p_members_not_final(self, p):
     '''members : pair_and_separator members'''
+    #print(p[2])
     p[0] =  [p[1]] + p[2]
 
   def p_members_final(self, p):
     '''members : pair'''
-    p[0] = [p[1]]
+    #print(p[1])
+    aux = [p[1]]
+    print(p[1])
+    #print(p[1])
+    p[0] = aux
+    #print(aux)
     
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
@@ -270,6 +282,8 @@ class JsonParser(object):
   
   def p_pair(self, p):
     '''pair : key value'''
+    #print(p[2])
+    print(p[1]+p[2])
     p[0] = p[1]+p[2]
     #p[0] = p[1]
     #p[0] = 
@@ -280,9 +294,11 @@ class JsonParser(object):
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
     if(p[1][0] == "-"):
-      p[0] = "\"" + p[1][0] + "\"" + ': '
+      key = "\"" + p[1][0] + "\""
     else:
-      p[0] = p[1] + ': '
+      key = p[1]
+    key = key + ': '
+    p[0] = key
 
   def p_elements_final(self, p):
     '''elements : value'''

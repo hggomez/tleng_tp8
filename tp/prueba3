@@ -1,9 +1,2 @@
-{
-    "l1": {
-        "l2": {
-        	"l3":{
-        		"l4":"pepe"
-        	}
-        } 
-    }
-}
+{"key": [true,false,true],
+"key2": [false, true, false]}
