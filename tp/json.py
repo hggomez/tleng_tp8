@@ -224,7 +224,10 @@ class JsonParser(object):
 
   def p_value_string(self, p):
     '''value : string'''
-    p[0] = p[1]
+    if ('\\n' in p[1]):
+      p[0] = '\"'+p[1]+'\"'
+    else:
+      p[0] = p[1]
   
   def p_value_number(self, p):
     '''value : number'''
