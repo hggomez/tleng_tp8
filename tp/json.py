@@ -258,7 +258,7 @@ class JsonParser(object):
     '''object : BEGIN_OBJECT members END_OBJECT'''
     aux = p[2]
     aux = ["  "+member for member in aux]
-    print("DICT: ", aux)
+    #print("DICT: ", aux)
     p[0] = aux
 
   def p_members_not_final(self, p):
@@ -267,7 +267,7 @@ class JsonParser(object):
       p[0] = p[1]+p[2]
     else:
       p[0] = [p[1]]+p[2]
-    print("members_nofinal:", type(p[0]),p[0])
+    #print("members_nofinal:", type(p[0]),p[0])
 
   def p_members_final(self, p):
     '''members : pair'''
@@ -275,16 +275,16 @@ class JsonParser(object):
       p[0] = p[1]
     else:
       p[0] = [p[1]]
-    print("members_final:", type(p[0]), p[0])
+    #print("members_final:", type(p[0]), p[0])
 
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
-    print("pair_and_sep", p[1])
+    #print("pair_and_sep", p[1])
     p[0] = p[1]
 
   def p_pair(self, p):
     '''pair : key value'''
-    print("pairkey:", type(p[1]),p[1],"pairvalue", type(p[2]),p[2])
+    #print("pairkey:", type(p[1]),p[1],"pairvalue", type(p[2]),p[2])
     if type(p[2]) == list:
       p[0] = [p[1]]+p[2]
     else:
@@ -303,14 +303,15 @@ class JsonParser(object):
     if type(p[1]) == list:
       p[0] = p[1]
     else:
-      p[0] = [p[1]]
+      p[0] = ["- "+p[1]]
+    print("elements_final:", p[0])
 
   def p_elements_not_final(self, p):
     '''elements : value VALUE_SEPARATOR elements'''
     if type(p[1]) == list:
       p[0] = p[1]+p[3]
     else:
-      p[0] = [p[1]]+p[3]
+      p[0] = ["- "+p[1]]+p[3]
     print("elem_nofinal", type(p[0]), p[0])
 
   #def p_elements_final2(self, p):
