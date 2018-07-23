@@ -199,6 +199,9 @@ def agregar_indentacion(strings):
     res.append('  '+string)
   return res
 
+def keys_set(pairs):
+  return set([re.split(r'[^\\]"\s*:\s*', pair)[0] for pair in pairs])
+
 class JsonParser(object):
 
   def __init__(self, lexer=None, **kwargs):
@@ -252,15 +255,13 @@ class JsonParser(object):
   def p_not_empty_object(self, p):
     '''object : BEGIN_OBJECT members END_OBJECT'''
     aux = p[2]
-    aux_set = set([re.split(r'[^\\]"\s*:\s*', pair)[0] for pair in aux])
+    aux_set = keys_set(aux)
     if len(aux_set) != len(aux):
       raise "Dos claves iguales en el mismo nivel"
-    #print(aux)
-    if len(aux)==1:
+    if len(aux) == 1:
       aux = indentar_de_nuevo(aux[0])
-      aux = '\n '+aux
+      aux = '\n ' + aux
       #sys.stdout.write(aux)
-
     else:
       aux2 = []
       for e in aux:
@@ -310,7 +311,7 @@ class JsonParser(object):
       key = "\"" + p[1][0] + "\""
     else:
       key = p[1]
-    key = key + ':'
+    key = key + ': '
     p[0] = key
 
   def p_elements_final(self, p):
