@@ -310,7 +310,7 @@ class JsonParser(object):
   def p_elements_not_final(self, p):
     '''elements : value VALUE_SEPARATOR elements'''
     if type(p[1]) == list:
-      p[0] = p[1]+p[3]
+      p[0] = ["- "]+p[1]+p[3]
     else:
       p[0] = ["- "+p[1]]+p[3]
     #print("elem_nofinal", type(p[0]), p[0])
