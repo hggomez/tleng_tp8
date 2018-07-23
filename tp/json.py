@@ -272,7 +272,7 @@ class JsonParser(object):
   def p_members_final(self, p):
     '''members : pair'''
     if type(p[1]) == list:
-      p[0] = [" "]+p[1]
+      p[0] = p[1]
     else:
       p[0] = [p[1]]
     #print("members_final:", type(p[0]), p[0])
