@@ -77,6 +77,12 @@ Para este fin lo que hacemos es sintetizar una lista de strings de manera que ca
 En las producciones que permiten agregar elementos de diccionarios o listas en un mismo nivel debemos chequear si el elemento que que se está agregando debería anidarse (como sería en los casos de estar agregando un diccionaroi o una lista), ya que en esas situaciones debemos mostrar el elemento en una línea nueva, no al mismo nivel que su "padre". 
 También tuvimos que chequear en la producción que permite generar un diccionario, que las claves provenientes de los pares no se repitieran, debido a que esto no está soportado en _YAML_. Al encontrar dos claves iguales lanzamos un error.
 
+##Ejemplos
+*prueba es un json mas grande, con varios niveles de anidamiento y arreglos dentro
+*prueba2 es un json normal con varios niveles de anidamiento
+*prueba3 prueba los arreglos en distintos niveles
+*prueba4 es la prueba brindada por la cátedra
+*prueba5 pone a prueba _doble quotes_ para los valores que poseen '\n'
 
 ## Requisitos de software
 

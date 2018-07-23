@@ -1,6 +1,2 @@
-{
-    "k1_l1": "v1",
-    "k2_l1": "v2",
-    "k3_l1": "v3",
-    "k4_l1": {"k1_l2":"v4"}
-}
+[ {"clave1": "valor1", "clave 2": [ 125, "Cadena 1" ], "- clave3": true},
+"Cadena con salto\nde l ́ınea", [null, 35.6e9, {}] ]
