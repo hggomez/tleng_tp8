@@ -255,27 +255,25 @@ class JsonParser(object):
   def p_not_empty_object(self, p):
     '''object : BEGIN_OBJECT members END_OBJECT'''
     aux = p[2]
-    aux_set = keys_set(aux)
-    if len(aux_set) != len(aux):
-      raise "Dos claves iguales en el mismo nivel"
-    if len(aux) == 1:
-      aux = indentar_de_nuevo(aux[0])
-      aux = '\n ' + aux
-      #sys.stdout.write(aux)
-    else:
-      aux2 = []
-      for e in aux:
-        aux2.append(indentar_de_nuevo(e))
-      aux = ('  ').join(aux2)
-    p[0] = ('\n')+aux
+    aux = ["  "+member for member in aux]
+    print("DICT: ", aux)
+    p[0] = ""
 
   def p_members_not_final(self, p):
     '''members : pair_and_separator members'''
-    p[0] =  [p[1]] + p[2]
+    if type(p[1]) == list:
+      p[0] = p[1]+p[2]
+    else:
+      p[0] = [p[1]]+p[2]
+    print("members_nofinal:", type(p[0]),p[0])
 
   def p_members_final(self, p):
     '''members : pair'''
-    p[0] = [p[1]]
+    if type(p[1]) == list:
+      p[0] = p[1]
+    else:
+      p[0] = [p[1]]
+    print("members_final:", p[0])
 
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
@@ -283,7 +281,11 @@ class JsonParser(object):
 
   def p_pair(self, p):
     '''pair : key value'''
-    p[0] = p[1]+p[2]
+    print("pairkey:", type(p[1]),p[1],"pairvalue", type(p[2]),p[2])
+    if type(p[2]) == list:
+      p[0] = [p[1]]+p[2]
+    else:
+      p[0] = p[1]+p[2]
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
@@ -291,15 +293,20 @@ class JsonParser(object):
       key = "\"" + p[1] + "\""
     else:
       key = p[1]
-    key = key + ': '
-    p[0] = key
+    p[0] = key + ': '
 
   def p_elements_final(self, p):
     '''elements : value'''
-    p[0] = [p[1]]
+    if type(p[1]) == list:
+      p[0] = p[1]
+    else:
+      p[0] = [p[1]]
 
   def p_elements_not_final(self, p):
     '''elements : value VALUE_SEPARATOR elements'''
+    print("array", type([p[1]]+p[3]), [p[1]]+p[3])
+    ##CHEQUEAR ACA TODO TODO TODO TODO TODO TODO TODOTODO TODO TODO TODO TODO TODO TODOTODO TODO TODO TODO TODO TODO TODO
+    ## hay que ver si esto no necesita chequear si le viene un string o una lista
     p[0] = [p[1]]+p[3]
 
   #def p_elements_final2(self, p):
@@ -312,12 +319,14 @@ class JsonParser(object):
 
   def p_not_empty_array(self, p):
     '''array : BEGIN_ARRAY elements END_ARRAY'''
-    aux = agregar_guiones_medios(p[2])
-    aux = agregar_indentacion(aux)
-    aux = '\n'.join(aux)
-    p[0] = '\n'+aux
-    #print(p[0])
-    #print(agregar_guiones_medios(p[2]))
+    print("elements:", p[2])
+    #aux = agregar_guiones_medios(p[2])
+    ##FALTA AGREGAR INDENTACION
+    ## FALTA AGREGAR LOS GUIONES EN LAS LINEAS CON MAYOR INDeNTACION
+    aux=p[2]
+    aux = ["  "+element for element in aux]
+    p[0] = aux
+    print("not_empty_array", aux)
 
   def p_empty_array(self, p):
     '''array :  BEGIN_ARRAY END_ARRAY'''
@@ -331,11 +340,11 @@ class JsonParser(object):
   def p_number_negative(self, p):
     '''number : MINUS integer
               | MINUS float'''
-    p[0] = -p[2]
+    p[0] = "-"+str(p[2])
     
   def p_integer(self, p):
     '''integer : int'''
-    p[0] = p[1]
+    p[0] = str(p[1])
     
   def p_integer_exp(self, p):
     '''integer : int exp'''
@@ -351,36 +360,32 @@ class JsonParser(object):
     
   def p_exp_negative(self, p):
     '''exp : E MINUS DIGITS'''
-    p[0] = -p[3]
+    p[0] = "-"+str(p[3])
 
   def p_exp(self, p):
     '''exp : E DIGITS'''
-    p[0] = int(p[2])
+    p[0] = str(p[2])
     
   def p_exp_positive(self, p):
     '''exp : E PLUS DIGITS'''
-    p[0] = int(p[3])
+    p[0] = str(p[3])
     
   def p_frac(self, p):
     '''frac : DECIMAL_POINT DIGITS'''
-    p[0] = float('0.'+str(p[2]))
+    p[0] = '0.'+str(p[2])
     
   def p_int_zero(self, p):
     '''int : ZERO'''
-    p[0] = int(0)
+    p[0] = '0'
 
   def p_int_non_zero(self, p):
     '''int : DIGITS'''
     if p[1].startswith('0'):
       raise SyntaxError('Leading zeroes are not allowed.')
-    p[0] = int(p[1])
+    p[0] = str(p[1])
 
   def p_string(self, p):
     '''string : QUOTATION_MARK chars QUOTATION_MARK'''
-    #if(p[2][0] == "-"):
-    #  sys.stdout.write("\""+p[2]+"\"")
-    #else:
-    #  sys.stdout.write(p[2])
     p[0] = p[2]
 
   def p_final_chars(self, p):
@@ -389,7 +394,7 @@ class JsonParser(object):
     
   def p_not_final_chars(self, p):
     '''chars : chars char'''
-    p[0] = p[1]  + p[2].decode('utf-8') 
+    p[0] = p[1] + p[2].decode('utf-8')
     
   def p_char(self, p):
     '''char : UNESCAPED
