@@ -178,7 +178,6 @@ def not_more_indented_than(line, amount):
 def min_indented(lines):
   min_indentation = min([indentation(line) for line in lines])
   res = [line for line in lines if not_more_indented_than(line, min_indentation)]
-  print("EL RES:",res)
   return res
 
 def no_duplicate_keys(lines):
@@ -202,7 +201,6 @@ class JsonParser(object):
   
   def p_begin(self,p):
     '''pepe : value'''
-    print("THEFINALLIST:", p[1])
     for line in p[1]:
       print(line)
 
