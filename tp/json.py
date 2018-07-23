@@ -243,7 +243,7 @@ class JsonParser(object):
 
   def p_value_null(self, p):
     '''value : NULL'''
-    p[0] = 'null'
+    p[0] = ''
 
   def p_empty_object(self, p):
     '''object : BEGIN_OBJECT END_OBJECT'''
