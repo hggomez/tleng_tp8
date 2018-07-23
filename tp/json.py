@@ -177,6 +177,18 @@ def decrement_indentation():
 def end_line():
   sys.stdout.write('\n')
 
+def agregar_guiones_medios(strings):
+  res = []
+  for string in strings:
+    res.append('- '+string)
+  return res
+
+def agregar_indentacion(strings):
+  res = []
+  for string in strings:
+    res.append('  '+string)
+  return res
+
 class JsonParser(object):
 
   def __init__(self, lexer=None, **kwargs):
@@ -191,6 +203,10 @@ class JsonParser(object):
 
   tokens = JSON_TOKENS
   
+  def p_begin(self,p):
+    '''pepe : value'''
+    print(p[1])
+
   def p_value_string(self, p):
     '''value : string'''
     p[0] = p[1]
@@ -201,9 +217,12 @@ class JsonParser(object):
 
   def p_value_empty_object(self, p):
     '''value : object'''
+    #print(p[1])
+    p[0] = p[1]
 
   def p_value_array(self, p):
     '''value : array'''
+    p[0] = p[1]
   
   def p_value_true(self, p):
     '''value : TRUE'''
@@ -222,97 +241,78 @@ class JsonParser(object):
     p[0] = "{}"
     
   def p_not_empty_object(self, p):
-    '''object : object_begin members object_end'''
+    '''object : BEGIN_OBJECT members END_OBJECT'''
     aux = p[2]
-    to_set = set(aux)
-    if len(to_set) != len(aux):
-      raise "dos claves iguales en el mismo nivel"   
-  
-  def p_object_begin(self, p):
-    '''object_begin : BEGIN_OBJECT'''
-    global objects_count
-    objects_count+=1
-    end_line()
-    increment_indentation() 
-    print_indentation()
+    #print(aux)
+    p[0] = ('./').join(aux)
+    #aux = p[2]
+    #to_set = set(aux)
+    #if len(to_set) != len(aux):
+    #  raise "dos claves iguales en el mismo nivel"
+    #aux = p[2]
+    #to_set = set(aux)
+    #if len(to_set) != len(aux):
+    #  raise "dos claves iguales en el mismo nivel"   
 
-  def p_object_end(self, p):
-    '''object_end : END_OBJECT'''
-    global objects_count
-    objects_count-=1
-    if objects_count == 0:
-      end_line()
-    decrement_indentation()
+  def p_members_not_final(self, p):
+    '''members : pair_and_separator members'''
+    p[0] =  [p[1]] + p[2]
 
   def p_members_final(self, p):
     '''members : pair'''
-    p[0] = p[1]
+    p[0] = [p[1]]
     
-  def p_members_not_final(self, p):
-    '''members : pair_and_separator members'''
-    p[0] =  p[1] + p[2]
-
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
     p[0] = p[1]
-    end_line()
-    print_indentation()
+    #end_line()
+    #print_indentation()
   
   def p_pair(self, p):
-    '''pair : key value_abst'''
-    p[0] = p[1]
-
-  def p_value_abst(self, p):
-    '''value_abst : value'''
-    p[0] = p[1]
-    decrement_indentation()
-
+    '''pair : key value'''
+    p[0] = p[1]+p[2]
+    #p[0] = p[1]
+    #p[0] = 
+    #print(p[1])
+    #print(p[2])
+    #print(p[2])
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
-    if(p[1][0][0] == "-"):
-      sys.stdout.write("\"" + p[1][0] + "\"" + ': ')
+    if(p[1][0] == "-"):
+      p[0] = "\"" + p[1][0] + "\"" + ': '
     else:
-      sys.stdout.write(p[1][0] + ': ')
-    #end_line()
-    increment_indentation()
-    p[0] = p[1]
-  
-  def p_elements(self, p):
-    '''elements : 
-                | elements_not_final
-                | elements_final'''
-   
-  def p_elements_not_final(self, p):
-    '''elements_not_final : elements value_abst_elements VALUE_SEPARATOR'''
-    print_indentation()
-    sys.stdout.write('- ')
-
-  def p_value_abst_elements(self, p):
-    '''value_abst_elements : value'''
-    end_line()
+      p[0] = p[1] + ': '
 
   def p_elements_final(self, p):
-    '''elements_final : elements value'''
+    '''elements : value'''
+    p[0] = [p[1]]
+
+  def p_elements_not_final(self, p):
+    '''elements : value VALUE_SEPARATOR elements'''
+    p[0] = [p[1]]+p[3]
+
+  #def p_elements_final2(self, p):
+  #  '''elements_final : value'''
+  #  p[0] = '- '+p[2]
   
-  def p_array(self, p):
-    '''array : array_begin elements array_end'''
+  #def p_value_abst_elements(self, p):
+  #  '''value_abst_elements : value'''
+  #  p[0] = p[1]
+
+  def p_not_empty_array(self, p):
+    '''array : BEGIN_ARRAY elements END_ARRAY'''
+    aux = agregar_guiones_medios(p[2])
+    aux = agregar_indentacion(aux)
+    aux = '\n'.join(aux)
+    p[0] = '\n'+aux
+    #print(p[0])
+    #print(agregar_guiones_medios(p[2]))
 
   def p_empty_array(self, p):
     '''array :  BEGIN_ARRAY END_ARRAY'''
-    sys.stdout.write('[]')
+    p[0] = '[]'
 
-  def p_array_begin(self, p):
-    '''array_begin :  BEGIN_ARRAY'''
-    end_line()
-    increment_indentation()
-    print_indentation()
-    sys.stdout.write('- ')
-
-  def p_array_end(self, p):
-    '''array_end : END_ARRAY'''
-    decrement_indentation()
-    
   def p_number_positive(self, p):
     '''number : integer
               | float'''
@@ -371,7 +371,7 @@ class JsonParser(object):
     #  sys.stdout.write("\""+p[2]+"\"")
     #else:
     #  sys.stdout.write(p[2])
-    p[0] = [p[2]]
+    p[0] = p[2]
 
   def p_final_chars(self, p):
     '''chars : '''
