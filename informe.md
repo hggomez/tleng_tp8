@@ -43,8 +43,7 @@ Con la gramática propuesta anteriormente (Que se sabe LALR), no se genera ning�
 
 ##Lexer
 
-Una vez que terminamos con la gramática implementamos el lexer. Este se encarga de transformar la cadena recibida en terminales de nuestra gramática, para que luego el parser pueda reconstruir el árbol.
-Los distintos terminales son asociados a tokens que representan de manera más general a los mismos.
+Una vez terminada la gramática implementamos el lexer. Este se encarga de transformar la cadena recibida en terminales de nuestra gramática, para que luego el parser pueda reconstruir el árbol.
 
 Los tokens que utilizamos son los siguientes:
 * BEGIN_ARRAY, representando al [
@@ -76,8 +75,10 @@ Los tokens que utilizamos son los siguientes:
 
 ##Parser
 
-Una vez que se obtiene la cadena _tokenizada_, solo resta hacer la traducción al lenguaje _YAML_. Para este fin, mantenemos una variable global que indica el nivel de _anidamiento_, lo cual necesitamos para traducir cada terminal con el nivel de _indentación_ correspondiente. También tuvimos que agregar un atributo sintetizado que permite chequear que no haya claves repetidas dentro de un diccionario de _JSON_, ya que _YAML_ no soporta esto. 
-Al encontrarnos con dos claves iguales dentro de un mismo diccionario dejamos de traducir. Gracias a esto es que podemos detectar en qué parte del _JSON_ se produjo el error.
+Una vez que el lexer genera la cadena de _tokens_, solo resta hacer la traducción al lenguaje _YAML_ por medio del parser, ya que este nos permite entender la estructura de la cadena. 
+Para este fin lo que hacemos es sintetizar una lista de strings de manera que cada string se corresponda con una línea del _YAML_ resultante. En las producciones que anidan, debemos incrementar la indentación de todos los strings involucrados ya que así garantizamos que al final cada línea quede indentada como corresponde.
+En las producciones que permiten agregar elementos de diccionarios o listas en un mismo nivel debemos chequear si el elemento que que se está agregando debería anidarse (como sería en los casos de estar agregando un diccionaroi o una lista), ya que en esas situaciones debemos mostrar el elemento en una línea nueva, no al mismo nivel que su "padre". 
+También tuvimos que chequear en la producción que permite generar un diccionario, que las claves provenientes de los pares no se repitieran, debido a que esto no está soportado en _YAML_. Al encontrar dos claves iguales lanzamos un error.
 
 
 ##Requerimientos de software
