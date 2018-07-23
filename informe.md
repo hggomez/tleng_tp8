@@ -10,7 +10,8 @@ Gonzalez, Juan |   | ` `
 
 ##Introducción
 
-El objetivo de este trabajo es crear un traductor que tome cadenas válidas en el lenguaje _JSON_ y las traduzca al lenguaje YAML, teniendo en cuenta que _JSON_ soporta más de unaclave con un mismo nombre y YAML, en cuyo caso la traducción no será posible. Utilizamos la biblioteca _ply_ debido a que utiliza gramáticas _LALR_ y ya teníamos una.
+El objetivo de este trabajo es crear un traductor que tome cadenas válidas en el lenguaje _JSON_ y las traduzca al lenguaje YAML, teniendo en cuenta que _JSON_ soporta claves repetidas dentro de los diccionarios y YAML no; en cuyo caso la traducción no será posible. 
+Utilizamos la biblioteca _ply_ debido a que utiliza gramáticas _LALR_ y ya teníamos una. Esto último puede verificarse con _ply_ mismo ya que si encontrara conflictos en la gramática, lo anunciaría.
 
 ##Gramática:
 
