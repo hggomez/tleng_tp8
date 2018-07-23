@@ -5,8 +5,8 @@
 Integrante | Libreta | Correo
 --- | --- | --- |
 Fachal, Matías | 154/15  | `mfachal@dc.uba.ar`  
-Gomez, Horacio | 756/13 | ` horaciogomez.1993@gmail.com` |
-Gonzalez, Juan |   | ` `  
+Gomez, Horacio | 756/13 | `horaciogomez.1993@gmail.com` |
+Gonzalez, Juan | 324/14 | `gonzalezjuan.ab@gmail.com`  
 
 ##Introducción
 
@@ -14,7 +14,32 @@ El objetivo de este trabajo es crear un traductor que tome cadenas válidas en e
 
 ##Gramática:
 
-Tomamos la gramática definida en la [página oficial de JSON](https://www.json.org).
+Tomamos como base la gramática definida en la [página oficial de JSON](https://www.json.org).
+Ésta gramática fue modificada a medida que se fue avanzando el trabajo por conveniencia. La gramatica final resultante fué:
+
+BEGIN -> VALUE
+VALUE -> str
+VALUE -> number
+VALUE -> OBJECT
+VALUE -> ARRAY
+VALUE -> true
+VALUE -> false
+VALUE -> null
+OBJECT -> {}
+OBJECT -> {MEMBERS}
+MEMBERS ->PAIR_AND_SEPARATOR MEMBERS
+MEMBERS -> PAIR
+PAIR_AND_SEPARATOR -> PAIR ,
+PAIR -> KEY VALUE
+KEY -> str :
+ELEMENTS -> VALUE
+ELEMENTS -> VALUE , ELEMENTS
+ARRAY -> [ELEMENTS]
+ARRAY -> []
+
+Notar que por claridad hemos resumido los strings bajo 'str' y los numeros bajo 'number'.
+Antes que nada, es importante aclarar que PLY es una herramienta para parsers LALR y además, brinda la posibilidad de arrojar una advertencia a la hora de generar las tablas de action y go to para una gramática con conflictos.
+Con la gramática propuesta anteriormente (Que se sabe LALR), no se genera ningún conflicto de cualquier índole.
 
 ##Lexer
 
