@@ -218,8 +218,9 @@ class JsonParser(object):
 
   def p_value_empty_object(self, p):
     '''value : object'''
-    #print(p[1])
-    p[0] = p[1]
+    #sys.stdout.write(p[1])
+    p[0] = p[1]+'**'
+    #print('--'+p[0]+'--')
 
   def p_value_array(self, p):
     '''value : array'''
@@ -246,25 +247,38 @@ class JsonParser(object):
     aux = p[2]
     aux_set = set([re.split(r'[^\\]"\s*:\s*', pair)[0] for pair in aux])
     if len(aux_set) != len(aux):
-      raise "dos claves iguales en el mismo nivel"
-    p[0] = ('./').join(aux)
+      raise "Dos claves iguales en el mismo nivel"
+    p[0] = ('\n').join(aux)
 
   def p_members_not_final(self, p):
     '''members : pair_and_separator members'''
+    #print(p[1])
+    #print('************')
+    #print(p[2][0])
+    #print('+++++++++++')
     p[0] =  [p[1]] + p[2]
 
   def p_members_final(self, p):
     '''members : pair'''
-    p[0] = [p[1]]
+    #print(p[1])
+    aux = [p[1]]
+    #print(p[1])
+    #print(p[1])
+    p[0] = aux
+    #print(aux)
     
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
     p[0] = p[1]
+    #print(p[1])
+    #print('___________________')
     #end_line()
     #print_indentation()
   
   def p_pair(self, p):
     '''pair : key value'''
+    #print(p[2])
+    #print(p[1]+p[2])
     p[0] = p[1]+p[2]
     #p[0] = p[1]
     #p[0] = 
@@ -275,9 +289,11 @@ class JsonParser(object):
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
     if(p[1][0] == "-"):
-      p[0] = "\"" + p[1][0] + "\"" + ': '
+      key = "\"" + p[1][0] + "\""
     else:
-      p[0] = p[1] + ': '
+      key = p[1]
+    key = key + ': '
+    p[0] = key
 
   def p_elements_final(self, p):
     '''elements : value'''
