@@ -218,7 +218,7 @@ class JsonParser(object):
   
   def p_begin(self,p):
     '''pepe : value'''
-    print(p[1])
+    print("WASABI:",p[1])
 
   def p_value_string(self, p):
     '''value : string'''
@@ -257,7 +257,7 @@ class JsonParser(object):
     aux = p[2]
     aux = ["  "+member for member in aux]
     print("DICT: ", aux)
-    p[0] = ""
+    p[0] = aux
 
   def p_members_not_final(self, p):
     '''members : pair_and_separator members'''
@@ -273,10 +273,11 @@ class JsonParser(object):
       p[0] = p[1]
     else:
       p[0] = [p[1]]
-    print("members_final:", p[0])
+    print("members_final:", type(p[0]), p[0])
 
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
+    print("pair_and_sep", p[1])
     p[0] = p[1]
 
   def p_pair(self, p):
@@ -304,10 +305,11 @@ class JsonParser(object):
 
   def p_elements_not_final(self, p):
     '''elements : value VALUE_SEPARATOR elements'''
-    print("array", type([p[1]]+p[3]), [p[1]]+p[3])
-    ##CHEQUEAR ACA TODO TODO TODO TODO TODO TODO TODOTODO TODO TODO TODO TODO TODO TODOTODO TODO TODO TODO TODO TODO TODO
-    ## hay que ver si esto no necesita chequear si le viene un string o una lista
-    p[0] = [p[1]]+p[3]
+    if type(p[1]) == list:
+      p[0] = p[1]+p[3]
+    else:
+      p[0] = [p[1]]+p[3]
+    print("elem_nofinal", type(p[0]), p[0])
 
   #def p_elements_final2(self, p):
   #  '''elements_final : value'''
