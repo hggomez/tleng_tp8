@@ -18,8 +18,7 @@ Tomamos la gramática definida en la [página oficial de JSON](https://www.json.
 
 ##Lexer
 
-Una vez que terminamos con la gramática implementamos el lexer. Este se encarga de transformar la cadena recibida en terminales de nuestra gramática, para que luego el parser pueda reconstruir el árbol.
-Los distintos terminales son asociados a tokens que representan de manera más general a los mismos.
+Una vez terminada la gramática implementamos el lexer. Este se encarga de transformar la cadena recibida en terminales de nuestra gramática, para que luego el parser pueda reconstruir el árbol.
 
 Los tokens que utilizamos son los siguientes:
 * BEGIN_ARRAY, representando al [
