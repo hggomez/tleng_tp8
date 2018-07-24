@@ -160,34 +160,6 @@ class JsonLexer(object):
       tokens.append(token)
     return tokens
 
-def indentation(line):
-  count = 0
-  for i in line:
-    if i == " ":
-      count+=1
-    else:
-      break
-  return count
-
-def not_more_indented_than(line, amount):
-  try:
-    return " " != line[amount: amount+1]
-  except:
-    return true
-
-def min_indented(lines):
-  min_indentation = min([indentation(line) for line in lines])
-  res = [line for line in lines if not_more_indented_than(line, min_indentation)]
-  return res
-
-def no_duplicate_keys(lines):
-  corresponding_pairs = min_indented(lines)
-  print("lospairs", corresponding_pairs)
-  raw_regex = r'([^\\"]\s*:)'
-  as_set = set([re.split(raw_regex, pair)[0]+re.split(raw_regex, pair)[1] for pair in corresponding_pairs])
-  print("EL SET", as_set)
-  return len(as_set) == len(corresponding_pairs)
-
 class JsonParser(object):
 
   def __init__(self, lexer=None, **kwargs):
@@ -245,15 +217,9 @@ class JsonParser(object):
   def p_not_empty_object(self, p):
     '''object : BEGIN_OBJECT members END_OBJECT'''
     array_keys = p[2][1]
-    #print('_________________')
-    #print(array_keys)
-    #print('???????')
     aux = p[2][0]
     to_set = set(array_keys)
-    #print(to_set)
-    if len(array_keys) != len(to_set):
-      raise("DUPLICADOSSSSSSSSSSSSSSSSSSSS!")
-    #assert no_duplicate_keys(aux), "Claves iguales en un mismo nivel"
+    assert len(array_keys) == len(to_set), "Claves iguales en un mismo nivel"
     aux = ["  "+member for member in aux]
     p[0] = aux
 
