@@ -43,6 +43,7 @@ Esto nos permitió verificar que la gramática resultante fuera _LALR_ ya que no
 
 Un lexer es un programa que se encarga de, dado un texto como input, transformarlo en "tokens" válidos. Decimos por eso que es el encargado de "tokenizar" la entrada en los nodos terminales de nuestra gramática.
 Los tokens utilizados son los siguientes:
+
 * BEGIN_ARRAY, representando al [
 * BEGIN_OBJECT, representando al {
 * END_ARRAY, representa el fin de un array, ]

@@ -145,8 +145,9 @@ class JsonLexer(object):
     return t
 
   def t_escaped_UNICODE_HEX(self, t):
-    r'\x75[\x30-\x39,\x41-\x46,\x61-\x66]{4}'  # 'uXXXX'
+    r'\x75'  # 'u'
     t.lexer.pop_state()
+    t.value = '\\u'
     return t
 
   def tokenize(self, data, *args, **kwargs):
@@ -379,7 +380,8 @@ class JsonParser(object):
            | ESCAPE FORM_FEED_CHAR
              | ESCAPE LINE_FEED_CHAR
             | ESCAPE CARRIAGE_RETURN_CHAR
-            | ESCAPE TAB_CHAR'''
+            | ESCAPE TAB_CHAR
+            | ESCAPE UNICODE_HEX'''
     p[0] = bytearray(p[len(p) - 1], 'utf8')
 
   def p_error(self, p): 
