@@ -181,7 +181,10 @@ def min_indented(lines):
 
 def no_duplicate_keys(lines):
   corresponding_pairs = min_indented(lines)
-  as_set = set([re.split(r'[^\\]"\s*:\s*', pair)[0] for pair in corresponding_pairs])
+  print("lospairs", corresponding_pairs)
+  raw_regex = r'([^\\"]\s*:)'
+  as_set = set([re.split(raw_regex, pair)[0]+re.split(raw_regex, pair)[1] for pair in corresponding_pairs])
+  print("EL SET", as_set)
   return len(as_set) == len(corresponding_pairs)
 
 class JsonParser(object):
@@ -272,7 +275,7 @@ class JsonParser(object):
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
-    if(p[1][0] == "-"):
+    if(p[1][0] == "-" or ":" in p[1]):
       key = "\"" + p[1] + "\""
     else:
       key = p[1]
