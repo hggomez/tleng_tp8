@@ -244,35 +244,46 @@ class JsonParser(object):
     
   def p_not_empty_object(self, p):
     '''object : BEGIN_OBJECT members END_OBJECT'''
-    aux = p[2]
-    assert no_duplicate_keys(aux), "Claves iguales en un mismo nivel"
+    array_keys = p[2][1]
+    #print('_________________')
+    #print(array_keys)
+    #print('???????')
+    aux = p[2][0]
+    to_set = set(array_keys)
+    #print(to_set)
+    if len(array_keys) != len(to_set):
+      raise("DUPLICADOSSSSSSSSSSSSSSSSSSSS!")
+    #assert no_duplicate_keys(aux), "Claves iguales en un mismo nivel"
     aux = ["  "+member for member in aux]
     p[0] = aux
 
   def p_members_not_final(self, p):
     '''members : pair_and_separator members'''
-    if type(p[1]) == list:
-      p[0] = p[1]+p[2]
+    if type(p[1][0]) == list:
+      aux = p[1][0]+p[2][0]
     else:
-      p[0] = [p[1]]+p[2]
+      aux = [p[1][0]]+p[2][0]
+    p[0]=(aux,(p[2][1]+p[1][1]))
 
   def p_members_final(self, p):
     '''members : pair'''
-    if type(p[1]) == list:
-      p[0] = p[1]
+    if type(p[1][0]) == list:
+      aux = p[1][0]
     else:
-      p[0] = [p[1]]
+      aux = [p[1][0]]
+    p[0] = (aux, p[1][1])
 
   def p_pair_and_separator(self, p):
     '''pair_and_separator : pair VALUE_SEPARATOR'''
-    p[0] = p[1]
+    p[0] = (p[1][0],p[1][1])
 
   def p_pair(self, p):
     '''pair : key value'''
     if type(p[2]) == list:
-      p[0] = [p[1]]+p[2]
+      aux = [p[1][0]]+p[2]
     else:
-      p[0] = p[1]+p[2]
+      aux = p[1][0]+p[2]
+    p[0]= (aux, p[1][1])
 
   def p_key(self, p):
     '''key : string NAME_SEPARATOR'''
@@ -280,7 +291,7 @@ class JsonParser(object):
       key = "\"" + p[1] + "\""
     else:
       key = p[1]
-    p[0] = key + ': '
+    p[0] = (key + ': ', [p[1]])
 
   def p_elements_final(self, p):
     '''elements : value'''
