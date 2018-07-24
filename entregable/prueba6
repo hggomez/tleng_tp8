@@ -1,0 +1,9 @@
+{"key": [true,false,true],
+"key2": [false, true, false],
+"key3": {"key3_l2":{
+			"key4_l3":[false, true, false],
+			"key5_l3":[true, true, false],
+			"key4_l3":"final_value"
+			}
+		}
+}
