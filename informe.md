@@ -69,7 +69,9 @@ Los tokens utilizados son los siguientes:
 * LINE_FEED_CHAR, `n`, ídem
 * CARRIAGE_RETURN_CHAR, `r`, ídem
 * TAB_CHAR, `t`, ídem
-* UNICODE_HEX, en un estado escapado representa a las strings del tipo `uXXXX`, las cuales actualmente no se interpretan especialmente.
+* UNICODE_HEX, en un estado escapado representa a las strings del tipo `\u`, las cuales actualmente no se interpretan especialmente, pero mantuvimos por cuestión de actualizar el código gradualmente.
+
+También mantuvimos el rango de caracteres que aceptamos en [\x20-\x21,\x23-\x5B,\x5D-\xFF], lo cual significa que si bien aceptamos strings como `línea`, no aceptamos tales como `l ́ınea`, puesto que dicha string tiene un caracter combinante con un caracter de i distinto al estándar.
 
 ## Parser
 
@@ -79,12 +81,14 @@ En las producciones que permiten agregar elementos de diccionarios o listas en u
 También tuvimos que chequear en la producción que permite generar un diccionario, que las claves provenientes de los pares no se repitieran, debido a que esto no está soportado en _YAML_. Al encontrar dos claves iguales lanzamos un error.
 
 ##Ejemplos
-*prueba es un json mas grande, con varios niveles de anidamiento y arreglos dentro
-*prueba2 es un json normal con varios niveles de anidamiento
-*prueba3 prueba los arreglos en distintos niveles
-*prueba4 es la prueba brindada por la cátedra
-*prueba5 captura los casos en donde los valores que poseen '\n' (_doble quotes_) 
-*prueba6 debería fallar al poseer dos claves iguales en el mismo nivel
+
+* prueba es un json mas grande, con varios niveles de anidamiento y arreglos dentro.
+* prueba2 es un json normal con varios niveles de anidamiento.
+* prueba3 prueba los arreglos en distintos niveles.
+* prueba4 es la prueba brindada por la cátedra.
+* prueba4.1 es la prueba dada por la cátedra con el añadido de tener un caracter inválido y una subcadena de la forma `\uXXXX`.
+* prueba5 captura los casos en donde los valores que poseen '\n' (_doble quotes_). 
+* prueba6 debería fallar al poseer dos claves iguales en el mismo nivel.
 
 ## Requisitos de software
 
